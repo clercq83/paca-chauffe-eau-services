@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACA Chauffe-Eau Services | Choisissez votre zone</title>
+<meta name="description" content="Dépannage, remplacement et pose de chauffe-eau électriques partout en région PACA. Choisissez votre zone pour être mis en relation avec l'artisan local.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="PACA Chauffe-Eau Services">
+<meta property="og:description" content="Chauffe-eau électriques, partout en PACA. Choisissez votre zone.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2312283D'/%3E%3Cpath d='M16 6C16 6 9 15 9 20a7 7 0 0 0 14 0c0-5-7-14-7-14z' fill='%230EA5E9'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0EA5E9;
+    --navy-deep:#0369A1;
+    --cream:#F0F9FF;
+    --slate:#1A1A1A;
+    --slate-soft:#4E5A67;
+    --line:#BAE6FD;
+    --teal:#0C6149;
+    --disabled-bg:#EEF2F5;
+    --disabled-line:#D8DFE5;
+    --disabled-text:#8A939C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Public Sans',sans-serif;
+    background:var(--cream);
+    color:var(--slate);
+    line-height:1.6;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;color:var(--slate);}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--cream);
+    border-bottom:1px solid var(--line);
+  }
+  header .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    height:76px;
+  }
+  .logo{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--slate);}
+  .logo span{color:var(--navy);}
+
+  .hero{
+    background:var(--navy);
+    color:#fff;
+    padding:88px 0 64px;
+    text-align:center;
+  }
+  .hero .eyebrow{
+    font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    color:#DBF0FF;margin-bottom:14px;
+  }
+  .hero h1{color:#fff;font-size:38px;max-width:680px;margin:0 auto 18px;}
+  .hero p{color:#DBF0FF;max-width:520px;margin:0 auto;font-size:16px;}
+
+  .zones{padding:56px 0 90px;}
+  .zones h2{text-align:center;font-size:26px;margin-bottom:8px;}
+  .zones > .wrap > p.intro{
+    text-align:center;color:var(--slate-soft);max-width:520px;margin:0 auto 40px;
+  }
+  .zone-list{display:flex;flex-direction:column;gap:18px;}
+  .zone-row{
+    --zc:#0EA5E9;
+    display:grid;grid-template-columns:1fr 300px;gap:0;
+    background:#fff;border:1px solid var(--line);border-left:5px solid var(--zc);border-radius:8px;overflow:hidden;
+  }
+  .zone-row.disabled{background:var(--disabled-bg);border-color:var(--disabled-line);border-left-color:var(--disabled-line);}
+
+  .zone-main{padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .zone-main-left{display:flex;align-items:center;gap:16px;}
+  .mini-carte{flex-shrink:0;width:52px;height:44px;}
+  .mini-carte .zc-dept{fill:var(--zc);}
+  .mini-carte .zc-autre{fill:#D6E4EC;}
+  .zone-row.disabled .mini-carte .zc-dept{fill:var(--disabled-line);}
+  .zone-name{font-family:'Fraunces',serif;font-size:22px;margin-bottom:4px;}
+  .zone-row.disabled .zone-name{color:var(--disabled-text);}
+  .zone-dept{font-size:13px;color:var(--slate-soft);}
+  .zone-row.disabled .zone-dept{color:var(--disabled-text);}
+  .zone-status{
+    display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;
+    background:#E1F5EE;color:var(--teal);white-space:nowrap;
+  }
+  .zone-status.soon{background:var(--disabled-line);color:var(--disabled-text);}
+
+  /* Fiche de contact de la zone */
+  .fiche{
+    background:#F8FBFF;border-left:1px solid var(--line);
+    padding:22px 24px;display:flex;flex-direction:column;justify-content:center;gap:6px;
+  }
+  .zone-row.disabled .fiche{background:transparent;}
+  .fiche .marque{font-family:'Fraunces',serif;font-weight:600;font-size:15px;}
+  .fiche .marque span{color:var(--zc);}
+  .fiche .accroche{font-size:12.5px;color:var(--slate-soft);margin-bottom:8px;}
+  .fiche a.tel{
+    display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;
+    color:var(--zc);
+  }
+  .fiche .site{font-size:12px;color:var(--slate-soft);}
+  .fiche .placeholder{font-size:12.5px;color:var(--disabled-text);font-style:italic;}
+
+  footer{
+    border-top:1px solid var(--line);padding:28px 0;text-align:center;
+    font-size:13px;color:var(--slate-soft);
+  }
+
+  @media (max-width:640px){
+    .zone-row{grid-template-columns:1fr;}
+    .carte{border-left:none;border-top:1px solid var(--line);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="logo">PACA <span>Chauffe-Eau Services</span></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Dans toute la région PACA</p>
+    <h1>Chauffe-eau électrique : dépannage, remplacement, pose</h1>
+    <p>Chaque zone est tenue par un artisan qui intervient lui-même, pas un réseau de sous-traitants. Choisissez votre secteur pour être mis en relation avec le bon artisan.</p>
+  </div>
+</section>
+
+<section class="zones">
+  <div class="wrap">
+    <h2>Votre zone d'intervention</h2>
+    <p class="intro">D'autres zones ouvrent au fur et à mesure, selon les artisans disponibles localement.</p>
+
+    <div class="zone-list">
+
+      <a class="zone-row" style="--zc:#0EA5E9;text-decoration:none;" href="https://azur-chauffe-eau.fr" target="_blank" rel="noopener">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="83" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Azur</div>
+              <div class="zone-dept">Var (83) — secteur Toulon</div>
+            </div>
+          </div>
+          <span class="zone-status">Disponible</span>
+        </div>
+        <div class="fiche">
+          <div class="marque">Azur <span>Chauffe-Eau Services</span></div>
+          <div class="accroche">C'est l'artisan qui vient, pas un sous-traitant.</div>
+          <span class="tel">☎ 06 44 17 08 79</span>
+          <span class="site">azur-chauffe-eau.fr</span>
+        </div>
+      </a>
+
+      <div class="zone-row disabled" style="--zc:#0EA5E9;">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="83" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Maures</div>
+              <div class="zone-dept">Var (83) — golfe de Saint-Tropez, Bormes, Brignoles, Le Luc</div>
+            </div>
+          </div>
+          <span class="zone-status soon">Bientôt</span>
+        </div>
+        <div class="fiche">
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
+        </div>
+      </div>
+
+      <div class="zone-row disabled" style="--zc:#E8734A;">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="06" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Riviera</div>
+              <div class="zone-dept">Alpes-Maritimes (06) — secteur Nice</div>
+            </div>
+          </div>
+          <span class="zone-status soon">Bientôt</span>
+        </div>
+        <div class="fiche">
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
+        </div>
+      </div>
+
+      <div class="zone-row disabled" style="--zc:#E8734A;">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="06" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Estérel</div>
+              <div class="zone-dept">Alpes-Maritimes (06) — secteur Cannes / Antibes</div>
+            </div>
+          </div>
+          <span class="zone-status soon">Bientôt</span>
+        </div>
+        <div class="fiche">
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
+        </div>
+      </div>
+
+      <div class="zone-row disabled" style="--zc:#8B7CC8;">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="13" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Calanques</div>
+              <div class="zone-dept">Bouches-du-Rhône (13) — secteur Marseille</div>
+            </div>
+          </div>
+          <span class="zone-status soon">Bientôt</span>
+        </div>
+        <div class="fiche">
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
+        </div>
+      </div>
+
+      <div class="zone-row disabled" style="--zc:#8B7CC8;">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="13" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Provence</div>
+              <div class="zone-dept">Bouches-du-Rhône (13) — secteur Aix</div>
+            </div>
+          </div>
+          <span class="zone-status soon">Bientôt</span>
+        </div>
+        <div class="fiche">
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
+        </div>
+      </div>
+
+      <div class="zone-row disabled" style="--zc:#C9932E;">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="84" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Comtat</div>
+              <div class="zone-dept">Vaucluse (84)</div>
+            </div>
+          </div>
+          <span class="zone-status soon">Bientôt</span>
+        </div>
+        <div class="fiche">
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
+        </div>
+      </div>
+
+      <div class="zone-row disabled" style="--zc:#4F9C7C;">
+        <div class="zone-main">
+          <div class="zone-main-left">
+            <svg class="mini-carte" data-hl="04,05" viewBox="0 0 120 90"></svg>
+            <div>
+              <div class="zone-name">Alpes du Sud</div>
+              <div class="zone-dept">Alpes-de-Haute-Provence &amp; Hautes-Alpes (04 / 05)</div>
+            </div>
+          </div>
+          <span class="zone-status soon">Bientôt</span>
+        </div>
+        <div class="fiche">
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    PACA Chauffe-Eau Services · <a href="pilotage.html" style="color:inherit;text-decoration:underline;">Pilotage</a>
+  </div>
+</footer>
+
+<script>
+  // Petite carte schématique de la PACA, un rectangle par département,
+  // celui (ceux) de la zone en surbrillance dans la couleur de la zone.
+  const DEPTS = {
+    "05": { x: 50, y: 2,  w: 32, h: 24 },
+    "04": { x: 50, y: 28, w: 32, h: 24 },
+    "84": { x: 8,  y: 30, w: 40, h: 26 },
+    "13": { x: 8,  y: 58, w: 42, h: 26 },
+    "83": { x: 52, y: 54, w: 30, h: 30 },
+    "06": { x: 84, y: 18, w: 30, h: 66 },
+  };
+
+  document.querySelectorAll(".mini-carte[data-hl]").forEach((svg) => {
+    const surlignes = svg.dataset.hl.split(",");
+    let rects = "";
+    for (const [code, r] of Object.entries(DEPTS)) {
+      const cls = surlignes.includes(code) ? "zc-dept" : "zc-autre";
+      rects += `<rect class="${cls}" x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="3"/>`;
+    }
+    svg.innerHTML = rects;
+  });
+</script>
+
+</body>
+</html>

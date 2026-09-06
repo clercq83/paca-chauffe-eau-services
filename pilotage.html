@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilotage | PACA Chauffe-Eau Services</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0EA5E9;--navy-deep:#0369A1;--cream:#F0F9FF;
+    --slate:#1A1A1A;--slate-soft:#4E5A67;--line:#BAE6FD;
+    --teal:#0C6149;--teal-bg:#E1F5EE;
+    --amber:#8A6200;--amber-bg:#FFF8E6;
+    --grey:#8A939C;--grey-bg:#EEF2F5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Public Sans',sans-serif;background:var(--cream);color:var(--slate);
+    margin:0;padding:32px 24px 100px;line-height:1.5;
+  }
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:24px;margin:0 0 4px;}
+  h2{font-family:'Fraunces',serif;font-weight:500;font-size:19px;margin:0 0 4px;}
+  .sub{color:var(--slate-soft);font-size:14px;margin-bottom:20px;}
+  .back{display:inline-block;font-size:13px;color:var(--navy-deep);margin-bottom:16px;}
+
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px;}
+  .stat{
+    background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:14px 20px;min-width:120px;
+  }
+  .stat .n{font-family:'Fraunces',serif;font-size:26px;}
+  .stat .l{font-size:12.5px;color:var(--slate-soft);}
+
+  section.bloc{margin-bottom:48px;}
+  .bloc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+
+  .table-wrap{overflow-x:auto;}
+  table{
+    width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);
+    border-radius:6px;overflow:hidden;
+  }
+  th{
+    text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--slate-soft);background:#F8FBFF;padding:9px 10px;border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:13.5px;vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td[contenteditable="true"]{outline:none;}
+  td[contenteditable="true"]:hover{background:#F8FBFF;}
+  td[contenteditable="true"]:focus{background:#EAF6FF;}
+
+  select{
+    font:inherit;font-size:12.5px;font-weight:600;padding:4px 8px;border-radius:999px;
+    border:none;cursor:pointer;
+  }
+  select.actif, select.paye{background:var(--teal-bg);color:var(--teal);}
+  select.recherche, select.attente{background:var(--amber-bg);color:var(--amber);}
+  select.bientot, select.annule{background:var(--grey-bg);color:var(--grey);}
+
+  .row-actions{margin-top:12px;}
+  button{
+    font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:6px;
+    border:1px solid var(--navy);background:#fff;color:var(--navy-deep);cursor:pointer;
+  }
+  button:hover{background:var(--navy);color:#fff;}
+  button.danger{border-color:#D8DFE5;color:var(--grey);padding:4px 8px;}
+  button.danger:hover{background:#D8DFE5;color:var(--slate);}
+
+  .note{font-size:12.5px;color:var(--slate-soft);margin-top:10px;max-width:70ch;}
+  .col-del{width:28px;text-align:center;}
+  a.piece{color:var(--navy-deep);font-weight:600;text-decoration:none;}
+  a.piece:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">&larr; Retour au site</a>
+<h1>Pilotage PACA Chauffe-Eau Services</h1>
+<p class="sub">Tout se pilote depuis ici : zones, encaissements, documents. Enregistré uniquement sur cet ordinateur, rien n'est envoyé nulle part.</p>
+
+<div class="stats" id="stats"></div>
+
+<section class="bloc">
+  <div class="bloc-head">
+    <h2>Zones</h2>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:920px;">
+      <thead>
+        <tr>
+          <th style="width:13%">Zone</th>
+          <th style="width:20%">Secteur</th>
+          <th style="width:11%">Statut</th>
+          <th style="width:13%">Artisan</th>
+          <th style="width:12%">Téléphone</th>
+          <th style="width:10%">Tarif location</th>
+          <th style="width:14%">Services proposés</th>
+          <th>Notes</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="corps-zones"></tbody>
+    </table>
+  </div>
+  <div class="row-actions"><button id="ajouter-zone">+ Ajouter une zone</button></div>
+  <p class="note">
+    Tarif de location : le montant mensuel proposé à l'artisan qui reprend la zone. Une zone à forte
+    demande (grande ville, forte population) se loue plus cher qu'une zone rurale, chiffre libre par zone.<br>
+    Services proposés : ce que l'artisan de la zone sait poser, au-delà de l'électrique — gaz,
+    thermodynamique, solaire. Un artisan peut en proposer plusieurs, sépare-les par une virgule.
+  </p>
+</section>
+
+<section class="bloc">
+  <div class="bloc-head">
+    <h2>Encaissements</h2>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:820px;">
+      <thead>
+        <tr>
+          <th style="width:10%">Date</th>
+          <th style="width:14%">Zone</th>
+          <th style="width:16%">De qui</th>
+          <th style="width:22%">Pour quoi</th>
+          <th style="width:10%">Montant</th>
+          <th style="width:10%">Statut</th>
+          <th>Notes</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="corps-encaissements"></tbody>
+    </table>
+  </div>
+  <div class="row-actions"><button id="ajouter-encaissement">+ Ajouter un encaissement</button></div>
+</section>
+
+<section class="bloc">
+  <div class="bloc-head">
+    <h2>Documents</h2>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:760px;">
+      <thead>
+        <tr>
+          <th style="width:24%">Nom</th>
+          <th style="width:16%">Zone / sujet</th>
+          <th style="width:36%">Lien ou emplacement</th>
+          <th>Notes</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="corps-documents"></tbody>
+    </table>
+  </div>
+  <div class="row-actions"><button id="ajouter-document">+ Ajouter un document</button></div>
+  <p class="note">
+    Colle ici le chemin du fichier sur ton Mac (ex. <code>/Users/lionelclercq/Documents/...</code>) ou un lien web
+    (contrat, devis, pièce d'identité de l'artisan). Clique dessus pour l'ouvrir.
+  </p>
+</section>
+
+<script>
+function creerRegistre(cle, colonnes, parDefaut) {
+  function charger() {
+    try {
+      const brut = localStorage.getItem(cle);
+      if (brut) return JSON.parse(brut);
+    } catch (e) {}
+    return parDefaut;
+  }
+  let lignes = charger();
+  function sauver() {
+    try { localStorage.setItem(cle, JSON.stringify(lignes)); } catch (e) {}
+  }
+  return {
+    get: () => lignes,
+    set: (l) => { lignes = l; sauver(); },
+    sauver,
+  };
+}
+
+const registreZones = creerRegistre("paca-pilotage-zones-v2", null, [
+  { zone: "Azur", secteur: "Var (83) — Toulon", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle." },
+  { zone: "Maures", secteur: "Var (83) — golfe de St-Tropez, Bormes, Brignoles, Le Luc", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Riviera", secteur: "Alpes-Maritimes (06)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
+  { zone: "Estérel", secteur: "Alpes-Maritimes (06)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Calanques", secteur: "Bouches-du-Rhône (13)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
+  { zone: "Provence", secteur: "Bouches-du-Rhône (13)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Comtat", secteur: "Vaucluse (84)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Alpes du Sud", secteur: "04 / 05", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, tarif à revoir à la baisse." },
+]);
+
+const registreEncaissements = creerRegistre("paca-pilotage-encaissements-v1", null, []);
+const registreDocuments = creerRegistre("paca-pilotage-documents-v1", null, []);
+
+function champEditable(valeur, onChange) {
+  const td = document.createElement("td");
+  td.contentEditable = "true";
+  td.textContent = valeur || "";
+  td.addEventListener("blur", () => onChange(td.textContent.trim()));
+  return td;
+}
+
+function boutonSupprimer(onClick) {
+  const td = document.createElement("td");
+  td.className = "col-del";
+  const btn = document.createElement("button");
+  btn.className = "danger";
+  btn.textContent = "✕";
+  btn.addEventListener("click", onClick);
+  td.appendChild(btn);
+  return td;
+}
+
+// ---------- Zones ----------
+function dessinerZones() {
+  const corps = document.getElementById("corps-zones");
+  corps.innerHTML = "";
+  const lignes = registreZones.get();
+
+  lignes.forEach((z, i) => {
+    const tr = document.createElement("tr");
+    tr.appendChild(champEditable(z.zone, (v) => { z.zone = v; registreZones.sauver(); }));
+    tr.appendChild(champEditable(z.secteur, (v) => { z.secteur = v; registreZones.sauver(); }));
+
+    const tdStatut = document.createElement("td");
+    const sel = document.createElement("select");
+    sel.className = z.statut;
+    [["actif", "Actif"], ["recherche", "Recherche"], ["bientot", "Bientôt"]].forEach(([val, lib]) => {
+      const opt = document.createElement("option");
+      opt.value = val; opt.textContent = lib;
+      if (val === z.statut) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener("change", () => {
+      z.statut = sel.value; sel.className = sel.value;
+      registreZones.sauver(); dessinerStats();
+    });
+    tdStatut.appendChild(sel);
+    tr.appendChild(tdStatut);
+
+    tr.appendChild(champEditable(z.artisan, (v) => { z.artisan = v; registreZones.sauver(); }));
+    tr.appendChild(champEditable(z.tel, (v) => { z.tel = v; registreZones.sauver(); }));
+    tr.appendChild(champEditable(z.tarif, (v) => { z.tarif = v; registreZones.sauver(); }));
+    tr.appendChild(champEditable(z.services, (v) => { z.services = v; registreZones.sauver(); }));
+    tr.appendChild(champEditable(z.notes, (v) => { z.notes = v; registreZones.sauver(); }));
+    tr.appendChild(boutonSupprimer(() => {
+      if (confirm(`Supprimer la zone "${z.zone}" ?`)) {
+        lignes.splice(i, 1); registreZones.set(lignes); dessinerZones(); dessinerStats();
+      }
+    }));
+    corps.appendChild(tr);
+  });
+}
+
+document.getElementById("ajouter-zone").addEventListener("click", () => {
+  const lignes = registreZones.get();
+  lignes.push({ zone: "Nouvelle zone", secteur: "", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "" });
+  registreZones.set(lignes); dessinerZones(); dessinerStats();
+});
+
+// ---------- Encaissements ----------
+function dessinerEncaissements() {
+  const corps = document.getElementById("corps-encaissements");
+  corps.innerHTML = "";
+  const lignes = registreEncaissements.get();
+
+  lignes.forEach((e, i) => {
+    const tr = document.createElement("tr");
+    tr.appendChild(champEditable(e.date, (v) => { e.date = v; registreEncaissements.sauver(); }));
+    tr.appendChild(champEditable(e.zone, (v) => { e.zone = v; registreEncaissements.sauver(); }));
+    tr.appendChild(champEditable(e.deQui, (v) => { e.deQui = v; registreEncaissements.sauver(); }));
+    tr.appendChild(champEditable(e.pourQuoi, (v) => { e.pourQuoi = v; registreEncaissements.sauver(); }));
+    tr.appendChild(champEditable(e.montant, (v) => { e.montant = v; registreEncaissements.sauver(); dessinerStats(); }));
+
+    const tdStatut = document.createElement("td");
+    const sel = document.createElement("select");
+    sel.className = e.statut || "attente";
+    [["paye", "Payé"], ["attente", "En attente"], ["annule", "Annulé"]].forEach(([val, lib]) => {
+      const opt = document.createElement("option");
+      opt.value = val; opt.textContent = lib;
+      if (val === (e.statut || "attente")) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener("change", () => {
+      e.statut = sel.value; sel.className = sel.value;
+      registreEncaissements.sauver(); dessinerStats();
+    });
+    tdStatut.appendChild(sel);
+    tr.appendChild(tdStatut);
+
+    tr.appendChild(champEditable(e.notes, (v) => { e.notes = v; registreEncaissements.sauver(); }));
+    tr.appendChild(boutonSupprimer(() => {
+      if (confirm("Supprimer cet encaissement ?")) {
+        lignes.splice(i, 1); registreEncaissements.set(lignes); dessinerEncaissements(); dessinerStats();
+      }
+    }));
+    corps.appendChild(tr);
+  });
+}
+
+document.getElementById("ajouter-encaissement").addEventListener("click", () => {
+  const lignes = registreEncaissements.get();
+  lignes.push({ date: new Date().toLocaleDateString("fr-FR"), zone: "", deQui: "", pourQuoi: "", montant: "", statut: "attente", notes: "" });
+  registreEncaissements.set(lignes); dessinerEncaissements(); dessinerStats();
+});
+
+// ---------- Documents ----------
+function dessinerDocuments() {
+  const corps = document.getElementById("corps-documents");
+  corps.innerHTML = "";
+  const lignes = registreDocuments.get();
+
+  lignes.forEach((d, i) => {
+    const tr = document.createElement("tr");
+    tr.appendChild(champEditable(d.nom, (v) => { d.nom = v; registreDocuments.sauver(); }));
+    tr.appendChild(champEditable(d.zone, (v) => { d.zone = v; registreDocuments.sauver(); }));
+
+    const tdLien = document.createElement("td");
+    tdLien.contentEditable = "true";
+    tdLien.textContent = d.lien || "";
+    tdLien.addEventListener("blur", () => { d.lien = tdLien.textContent.trim(); registreDocuments.sauver(); dessinerDocuments(); });
+    if (d.lien) {
+      tdLien.contentEditable = "false";
+      const a = document.createElement("a");
+      a.className = "piece";
+      a.href = d.lien.startsWith("http") || d.lien.startsWith("file:") ? d.lien : "file://" + d.lien;
+      a.textContent = d.lien;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.title = "Cliquer pour ouvrir. Double-cliquer pour modifier le chemin.";
+      a.addEventListener("dblclick", (ev) => {
+        ev.preventDefault();
+        tdLien.contentEditable = "true";
+        tdLien.textContent = d.lien;
+        tdLien.focus();
+      });
+      tdLien.innerHTML = "";
+      tdLien.appendChild(a);
+    }
+    tr.appendChild(tdLien);
+
+    tr.appendChild(champEditable(d.notes, (v) => { d.notes = v; registreDocuments.sauver(); }));
+    tr.appendChild(boutonSupprimer(() => {
+      if (confirm("Supprimer ce document ?")) {
+        lignes.splice(i, 1); registreDocuments.set(lignes); dessinerDocuments();
+      }
+    }));
+    corps.appendChild(tr);
+  });
+}
+
+document.getElementById("ajouter-document").addEventListener("click", () => {
+  const lignes = registreDocuments.get();
+  lignes.push({ nom: "Nouveau document", zone: "", lien: "", notes: "" });
+  registreDocuments.set(lignes); dessinerDocuments();
+});
+
+// ---------- Stats ----------
+function dessinerStats() {
+  const zones = registreZones.get();
+  const encaissements = registreEncaissements.get();
+  const actifs = zones.filter(z => z.statut === "actif").length;
+  const recherche = zones.filter(z => z.statut === "recherche").length;
+  const bientot = zones.filter(z => z.statut === "bientot").length;
+  const totalEncaisse = encaissements
+    .filter(e => e.statut === "paye")
+    .reduce((s, e) => s + (parseFloat((e.montant || "0").replace(",", ".").replace(/[^\d.-]/g, "")) || 0), 0);
+
+  document.getElementById("stats").innerHTML = `
+    <div class="stat"><div class="n">${zones.length}</div><div class="l">zones au total</div></div>
+    <div class="stat"><div class="n">${actifs}</div><div class="l">actives</div></div>
+    <div class="stat"><div class="n">${recherche}</div><div class="l">en recherche d'artisan</div></div>
+    <div class="stat"><div class="n">${bientot}</div><div class="l">pas encore lancées</div></div>
+    <div class="stat"><div class="n">${totalEncaisse.toLocaleString("fr-FR")} €</div><div class="l">encaissé (payé)</div></div>
+  `;
+}
+
+dessinerZones();
+dessinerEncaissements();
+dessinerDocuments();
+dessinerStats();
+</script>
+
+</body>
+</html>
