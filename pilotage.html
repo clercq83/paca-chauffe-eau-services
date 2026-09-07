@@ -140,6 +140,38 @@
 
 <section class="bloc">
   <div class="bloc-head">
+    <h2>Finances par zone</h2>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:640px;">
+      <thead>
+        <tr>
+          <th style="width:24%">Zone</th>
+          <th style="width:18%">CA encaissé</th>
+          <th style="width:18%">Coûts</th>
+          <th>Marge</th>
+        </tr>
+      </thead>
+      <tbody id="corps-finances"></tbody>
+    </table>
+  </div>
+  <div class="stats" id="stats-finances" style="margin-top:16px;margin-bottom:0;"></div>
+  <p class="note">
+    CA encaissé : somme des encaissements marqués "Payé" pour cette zone (tableau ci-dessus). Coûts :
+    ce que cette zone te coûte (sous-traitance, matériel, essence...), à saisir toi-même, zone par zone.
+    Marge = CA − Coûts. Charges fixes : frais qui ne dépendent pas d'une zone en particulier
+    (hébergement, domaine, téléphone pro...), à saisir une seule fois ci-dessous. Bénéfice net =
+    somme des marges − charges fixes.
+  </p>
+  <div class="row-actions" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span style="font-size:13px;font-weight:600;color:var(--slate-soft);">Charges fixes du mois</span>
+    <span id="champ-charges" style="display:inline-block;min-width:80px;padding:6px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:13.5px;" contenteditable="true"></span>
+    <span style="font-size:13px;color:var(--slate-soft);">€</span>
+  </div>
+</section>
+
+<section class="bloc">
+  <div class="bloc-head">
     <h2>Documents</h2>
   </div>
   <div class="table-wrap">
@@ -183,20 +215,21 @@ function creerRegistre(cle, colonnes, parDefaut) {
   };
 }
 
-const registreZones = creerRegistre("paca-pilotage-zones-v5", null, [
-  { zone: "Azur Ouest", secteur: "Var (83), Bandol a Hyeres (~517 500 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle.", site: "https://azur-chauffe-eau.fr/?secteur=ouest" },
-  { zone: "Argens", secteur: "Var (83), Frejus a Brignoles (~553 000 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Fusionne avec l'ancien secteur Maures, meme artisan qu'Azur Ouest pour l'instant.", site: "https://azur-chauffe-eau.fr/?secteur=argens" },
-  { zone: "Riviera", secteur: "Alpes-Maritimes (06), Nice (~565 900 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse.", site: "../riviera-chauffe-eau-services/index.html" },
-  { zone: "Estérel", secteur: "Alpes-Maritimes (06), Cannes, Antibes, Grasse (~562 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "../esterel-chauffe-eau-services/index.html" },
-  { zone: "Calanques", secteur: "Bouches-du-Rhône (13), Marseille ville (~886 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse. Couleur a revoir.", site: "../calanques-chauffe-eau-services/index.html" },
-  { zone: "Provence", secteur: "Bouches-du-Rhône (13), Aix, Aubagne, Cassis, La Ciotat (~594 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Couleur a revoir.", site: "../provence-chauffe-eau-services/index.html" },
-  { zone: "Berre", secteur: "Bouches-du-Rhône (13), Salon, Istres, Martigues, Marignane (~599 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Nouvelle zone, issue du découpage à trois du 13. Couleur a revoir.", site: "../berre-chauffe-eau-services/index.html" },
-  { zone: "Ventoux", secteur: "Vaucluse (84)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "" },
-  { zone: "Alpes du Sud", secteur: "04 / 05", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, tarif à revoir à la baisse.", site: "" },
+const registreZones = creerRegistre("paca-pilotage-zones-v6", null, [
+  { zone: "Azur Ouest", secteur: "Var (83), Bandol a Hyeres (~517 500 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle.", site: "https://azur-chauffe-eau.fr/?secteur=ouest", couts: "" },
+  { zone: "Argens", secteur: "Var (83), Frejus a Brignoles (~553 000 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Fusionne avec l'ancien secteur Maures, meme artisan qu'Azur Ouest pour l'instant.", site: "https://azur-chauffe-eau.fr/?secteur=argens", couts: "" },
+  { zone: "Riviera", secteur: "Alpes-Maritimes (06), Nice (~565 900 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse.", site: "../riviera-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Estérel", secteur: "Alpes-Maritimes (06), Cannes, Antibes, Grasse (~562 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "../esterel-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Calanques", secteur: "Bouches-du-Rhône (13), Marseille ville (~886 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse. Couleur a revoir.", site: "../calanques-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Provence", secteur: "Bouches-du-Rhône (13), Aix, Aubagne, Cassis, La Ciotat (~594 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Couleur a revoir.", site: "../provence-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Berre", secteur: "Bouches-du-Rhône (13), Salon, Istres, Martigues, Marignane (~599 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Nouvelle zone, issue du découpage à trois du 13. Couleur a revoir.", site: "../berre-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Ventoux", secteur: "Vaucluse (84)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "", couts: "" },
+  { zone: "Alpes du Sud", secteur: "04 / 05", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, tarif à revoir à la baisse.", site: "", couts: "" },
 ]);
 
 const registreEncaissements = creerRegistre("paca-pilotage-encaissements-v1", null, []);
 const registreDocuments = creerRegistre("paca-pilotage-documents-v1", null, []);
+const registreCharges = creerRegistre("paca-pilotage-charges-v1", null, { montant: "", note: "" });
 
 function champEditable(valeur, onChange) {
   const td = document.createElement("td");
@@ -239,7 +272,7 @@ function dessinerZones() {
     });
     sel.addEventListener("change", () => {
       z.statut = sel.value; sel.className = sel.value;
-      registreZones.sauver(); dessinerStats();
+      registreZones.sauver(); dessinerStats(); dessinerFinances();
     });
     tdStatut.appendChild(sel);
     tr.appendChild(tdStatut);
@@ -266,7 +299,7 @@ function dessinerZones() {
     tr.appendChild(champEditable(z.notes, (v) => { z.notes = v; registreZones.sauver(); }));
     tr.appendChild(boutonSupprimer(() => {
       if (confirm(`Supprimer la zone "${z.zone}" ?`)) {
-        lignes.splice(i, 1); registreZones.set(lignes); dessinerZones(); dessinerStats();
+        lignes.splice(i, 1); registreZones.set(lignes); dessinerZones(); dessinerStats(); dessinerFinances();
       }
     }));
     corps.appendChild(tr);
@@ -276,7 +309,7 @@ function dessinerZones() {
 document.getElementById("ajouter-zone").addEventListener("click", () => {
   const lignes = registreZones.get();
   lignes.push({ zone: "Nouvelle zone", secteur: "", statut: "bientot", site: "", artisan: "", tel: "", tarif: "", services: "", notes: "" });
-  registreZones.set(lignes); dessinerZones(); dessinerStats();
+  registreZones.set(lignes); dessinerZones(); dessinerStats(); dessinerFinances();
 });
 
 // ---------- Encaissements ----------
@@ -291,7 +324,7 @@ function dessinerEncaissements() {
     tr.appendChild(champEditable(e.zone, (v) => { e.zone = v; registreEncaissements.sauver(); }));
     tr.appendChild(champEditable(e.deQui, (v) => { e.deQui = v; registreEncaissements.sauver(); }));
     tr.appendChild(champEditable(e.pourQuoi, (v) => { e.pourQuoi = v; registreEncaissements.sauver(); }));
-    tr.appendChild(champEditable(e.montant, (v) => { e.montant = v; registreEncaissements.sauver(); dessinerStats(); }));
+    tr.appendChild(champEditable(e.montant, (v) => { e.montant = v; registreEncaissements.sauver(); dessinerStats(); dessinerFinances(); }));
 
     const tdStatut = document.createElement("td");
     const sel = document.createElement("select");
@@ -304,7 +337,7 @@ function dessinerEncaissements() {
     });
     sel.addEventListener("change", () => {
       e.statut = sel.value; sel.className = sel.value;
-      registreEncaissements.sauver(); dessinerStats();
+      registreEncaissements.sauver(); dessinerStats(); dessinerFinances();
     });
     tdStatut.appendChild(sel);
     tr.appendChild(tdStatut);
@@ -312,7 +345,7 @@ function dessinerEncaissements() {
     tr.appendChild(champEditable(e.notes, (v) => { e.notes = v; registreEncaissements.sauver(); }));
     tr.appendChild(boutonSupprimer(() => {
       if (confirm("Supprimer cet encaissement ?")) {
-        lignes.splice(i, 1); registreEncaissements.set(lignes); dessinerEncaissements(); dessinerStats();
+        lignes.splice(i, 1); registreEncaissements.set(lignes); dessinerEncaissements(); dessinerStats(); dessinerFinances();
       }
     }));
     corps.appendChild(tr);
@@ -322,7 +355,7 @@ function dessinerEncaissements() {
 document.getElementById("ajouter-encaissement").addEventListener("click", () => {
   const lignes = registreEncaissements.get();
   lignes.push({ date: new Date().toLocaleDateString("fr-FR"), zone: "", deQui: "", pourQuoi: "", montant: "", statut: "attente", notes: "" });
-  registreEncaissements.set(lignes); dessinerEncaissements(); dessinerStats();
+  registreEncaissements.set(lignes); dessinerEncaissements(); dessinerStats(); dessinerFinances();
 });
 
 // ---------- Documents ----------
@@ -376,6 +409,70 @@ document.getElementById("ajouter-document").addEventListener("click", () => {
   registreDocuments.set(lignes); dessinerDocuments();
 });
 
+// ---------- Finances par zone ----------
+function parseMontant(v) {
+  return parseFloat((v || "0").toString().replace(",", ".").replace(/[^\d.-]/g, "")) || 0;
+}
+
+function dessinerFinances() {
+  const corps = document.getElementById("corps-finances");
+  corps.innerHTML = "";
+  const zones = registreZones.get();
+  const encaissements = registreEncaissements.get();
+
+  const normalise = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+
+  let totalCA = 0, totalCouts = 0, totalMarge = 0;
+
+  zones.forEach((z) => {
+    const ca = encaissements
+      .filter((e) => e.statut === "paye" && normalise(e.zone) === normalise(z.zone))
+      .reduce((s, e) => s + parseMontant(e.montant), 0);
+    const couts = parseMontant(z.couts);
+    const marge = ca - couts;
+    totalCA += ca; totalCouts += couts; totalMarge += marge;
+
+    const tr = document.createElement("tr");
+    const tdZone = document.createElement("td");
+    tdZone.textContent = z.zone;
+    tr.appendChild(tdZone);
+
+    const tdCA = document.createElement("td");
+    tdCA.textContent = ca.toLocaleString("fr-FR") + " €";
+    tr.appendChild(tdCA);
+
+    tr.appendChild(champEditable(z.couts, (v) => { z.couts = v; registreZones.sauver(); dessinerFinances(); }));
+
+    const tdMarge = document.createElement("td");
+    tdMarge.textContent = marge.toLocaleString("fr-FR") + " €";
+    tdMarge.style.fontWeight = "600";
+    tdMarge.style.color = marge >= 0 ? "var(--teal)" : "#B5442E";
+    tr.appendChild(tdMarge);
+
+    corps.appendChild(tr);
+  });
+
+  const charges = registreCharges.get();
+  const champCharges = document.getElementById("champ-charges");
+  if (document.activeElement !== champCharges) champCharges.textContent = charges.montant || "0";
+  const chargesVal = parseMontant(charges.montant);
+  const beneficeNet = totalMarge - chargesVal;
+
+  document.getElementById("stats-finances").innerHTML = `
+    <div class="stat"><div class="n">${totalCA.toLocaleString("fr-FR")} €</div><div class="l">CA total</div></div>
+    <div class="stat"><div class="n">${totalCouts.toLocaleString("fr-FR")} €</div><div class="l">coûts totaux</div></div>
+    <div class="stat"><div class="n">${totalMarge.toLocaleString("fr-FR")} €</div><div class="l">marge totale</div></div>
+    <div class="stat"><div class="n" style="color:${beneficeNet >= 0 ? 'var(--teal)' : '#B5442E'}">${beneficeNet.toLocaleString("fr-FR")} €</div><div class="l">bénéfice net (marge − charges fixes)</div></div>
+  `;
+}
+
+document.getElementById("champ-charges").addEventListener("blur", (e) => {
+  const charges = registreCharges.get();
+  charges.montant = e.target.textContent.trim();
+  registreCharges.sauver();
+  dessinerFinances();
+});
+
 // ---------- Stats ----------
 function dessinerStats() {
   const zones = registreZones.get();
@@ -400,6 +497,7 @@ dessinerZones();
 dessinerEncaissements();
 dessinerDocuments();
 dessinerStats();
+dessinerFinances();
 </script>
 
 </body>
