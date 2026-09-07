@@ -182,13 +182,14 @@ function creerRegistre(cle, colonnes, parDefaut) {
   };
 }
 
-const registreZones = creerRegistre("paca-pilotage-zones-v2", null, [
+const registreZones = creerRegistre("paca-pilotage-zones-v3", null, [
   { zone: "Azur Ouest", secteur: "Var (83), Bandol a Hyeres (~517 500 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle." },
   { zone: "Argens", secteur: "Var (83), Frejus a Brignoles (~553 000 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Fusionne avec l'ancien secteur Maures, meme artisan qu'Azur Ouest pour l'instant." },
-  { zone: "Riviera", secteur: "Alpes-Maritimes (06)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
-  { zone: "Estérel", secteur: "Alpes-Maritimes (06)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
-  { zone: "Calanques", secteur: "Bouches-du-Rhône (13)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
-  { zone: "Provence", secteur: "Bouches-du-Rhône (13)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Riviera", secteur: "Alpes-Maritimes (06), Nice (~565 900 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
+  { zone: "Estérel", secteur: "Alpes-Maritimes (06), Cannes, Antibes, Grasse (~562 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Calanques", secteur: "Bouches-du-Rhône (13), Marseille ville (~886 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
+  { zone: "Provence", secteur: "Bouches-du-Rhône (13), Aix, Aubagne, Cassis, La Ciotat (~594 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Berre", secteur: "Bouches-du-Rhône (13), Salon, Istres, Martigues, Marignane (~599 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Nouvelle zone, issue du découpage à trois du 13." },
   { zone: "Comtat", secteur: "Vaucluse (84)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
   { zone: "Alpes du Sud", secteur: "04 / 05", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, tarif à revoir à la baisse." },
 ]);
