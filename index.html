@@ -73,14 +73,15 @@
     display:grid;grid-template-columns:1fr 300px;gap:0;
     background:#fff;border:1px solid var(--line);border-left:5px solid var(--zc);border-radius:8px;overflow:hidden;
   }
-  .zone-row.disabled{background:var(--disabled-bg);border-color:var(--disabled-line);border-left-color:var(--disabled-line);}
+  .zone-row.disabled{background:var(--disabled-bg);border-color:var(--disabled-line);}
+  .zone-row.disabled .mini-carte{opacity:.55;}
 
   .zone-main{padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   .zone-main-left{display:flex;align-items:center;gap:16px;}
   .mini-carte{flex-shrink:0;width:52px;height:44px;}
   .mini-carte .zc-dept{fill:var(--zc);}
   .mini-carte .zc-autre{fill:#D6E4EC;}
-  .zone-row.disabled .mini-carte .zc-dept{fill:var(--disabled-line);}
+  .zone-row.disabled .mini-carte .zc-dept{fill:var(--zc);}
   .zone-name{font-family:'Fraunces',serif;font-size:22px;margin-bottom:4px;}
   .zone-row.disabled .zone-name{color:var(--disabled-text);}
   .zone-dept{font-size:13px;color:var(--slate-soft);}
@@ -147,7 +148,7 @@
             <svg class="mini-carte" data-hl="83" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Azur</div>
-              <div class="zone-dept">Var (83) — secteur Toulon</div>
+              <div class="zone-dept">Var (83), secteur Toulon</div>
             </div>
           </div>
           <span class="zone-status">Disponible</span>
@@ -166,7 +167,7 @@
             <svg class="mini-carte" data-hl="83" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Maures</div>
-              <div class="zone-dept">Var (83) — golfe de Saint-Tropez, Bormes, Brignoles, Le Luc</div>
+              <div class="zone-dept">Var (83), golfe de Saint-Tropez, Bormes, Brignoles, Le Luc</div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
@@ -182,7 +183,7 @@
             <svg class="mini-carte" data-hl="06" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Riviera</div>
-              <div class="zone-dept">Alpes-Maritimes (06) — secteur Nice</div>
+              <div class="zone-dept">Alpes-Maritimes (06), secteur Nice</div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
@@ -198,7 +199,7 @@
             <svg class="mini-carte" data-hl="06" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Estérel</div>
-              <div class="zone-dept">Alpes-Maritimes (06) — secteur Cannes / Antibes</div>
+              <div class="zone-dept">Alpes-Maritimes (06), secteur Cannes / Antibes</div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
@@ -214,7 +215,7 @@
             <svg class="mini-carte" data-hl="13" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Calanques</div>
-              <div class="zone-dept">Bouches-du-Rhône (13) — secteur Marseille</div>
+              <div class="zone-dept">Bouches-du-Rhône (13), secteur Marseille</div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
@@ -230,7 +231,7 @@
             <svg class="mini-carte" data-hl="13" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Provence</div>
-              <div class="zone-dept">Bouches-du-Rhône (13) — secteur Aix</div>
+              <div class="zone-dept">Bouches-du-Rhône (13), secteur Aix</div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>

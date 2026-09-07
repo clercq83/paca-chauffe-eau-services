@@ -108,7 +108,7 @@
   <p class="note">
     Tarif de location : le montant mensuel proposé à l'artisan qui reprend la zone. Une zone à forte
     demande (grande ville, forte population) se loue plus cher qu'une zone rurale, chiffre libre par zone.<br>
-    Services proposés : ce que l'artisan de la zone sait poser, au-delà de l'électrique — gaz,
+    Services proposés : ce que l'artisan de la zone sait poser, au-delà de l'électrique. Gaz,
     thermodynamique, solaire. Un artisan peut en proposer plusieurs, sépare-les par une virgule.
   </p>
 </section>
@@ -183,8 +183,8 @@ function creerRegistre(cle, colonnes, parDefaut) {
 }
 
 const registreZones = creerRegistre("paca-pilotage-zones-v2", null, [
-  { zone: "Azur", secteur: "Var (83) — Toulon", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle." },
-  { zone: "Maures", secteur: "Var (83) — golfe de St-Tropez, Bormes, Brignoles, Le Luc", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
+  { zone: "Azur", secteur: "Var (83), Toulon", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle." },
+  { zone: "Maures", secteur: "Var (83), golfe de St-Tropez, Bormes, Brignoles, Le Luc", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
   { zone: "Riviera", secteur: "Alpes-Maritimes (06)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
   { zone: "Estérel", secteur: "Alpes-Maritimes (06)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
   { zone: "Calanques", secteur: "Bouches-du-Rhône (13)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
