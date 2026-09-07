@@ -87,16 +87,17 @@
     <h2>Zones</h2>
   </div>
   <div class="table-wrap">
-    <table style="min-width:920px;">
+    <table style="min-width:980px;">
       <thead>
         <tr>
-          <th style="width:13%">Zone</th>
-          <th style="width:20%">Secteur</th>
-          <th style="width:11%">Statut</th>
-          <th style="width:13%">Artisan</th>
-          <th style="width:12%">Téléphone</th>
-          <th style="width:10%">Tarif location</th>
-          <th style="width:14%">Services proposés</th>
+          <th style="width:12%">Zone</th>
+          <th style="width:18%">Secteur</th>
+          <th style="width:9%">Statut</th>
+          <th style="width:6%">Site</th>
+          <th style="width:12%">Artisan</th>
+          <th style="width:11%">Téléphone</th>
+          <th style="width:9%">Tarif location</th>
+          <th style="width:13%">Services proposés</th>
           <th>Notes</th>
           <th class="col-del"></th>
         </tr>
@@ -182,16 +183,16 @@ function creerRegistre(cle, colonnes, parDefaut) {
   };
 }
 
-const registreZones = creerRegistre("paca-pilotage-zones-v4", null, [
-  { zone: "Azur Ouest", secteur: "Var (83), Bandol a Hyeres (~517 500 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle." },
-  { zone: "Argens", secteur: "Var (83), Frejus a Brignoles (~553 000 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Fusionne avec l'ancien secteur Maures, meme artisan qu'Azur Ouest pour l'instant." },
-  { zone: "Riviera", secteur: "Alpes-Maritimes (06), Nice (~565 900 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
-  { zone: "Estérel", secteur: "Alpes-Maritimes (06), Cannes, Antibes, Grasse (~562 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
-  { zone: "Calanques", secteur: "Bouches-du-Rhône (13), Marseille ville (~886 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse." },
-  { zone: "Provence", secteur: "Bouches-du-Rhône (13), Aix, Aubagne, Cassis, La Ciotat (~594 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
-  { zone: "Berre", secteur: "Bouches-du-Rhône (13), Salon, Istres, Martigues, Marignane (~599 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Nouvelle zone, issue du découpage à trois du 13." },
-  { zone: "Ventoux", secteur: "Vaucluse (84)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "" },
-  { zone: "Alpes du Sud", secteur: "04 / 05", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, tarif à revoir à la baisse." },
+const registreZones = creerRegistre("paca-pilotage-zones-v5", null, [
+  { zone: "Azur Ouest", secteur: "Var (83), Bandol a Hyeres (~517 500 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle.", site: "https://azur-chauffe-eau.fr/?secteur=ouest" },
+  { zone: "Argens", secteur: "Var (83), Frejus a Brignoles (~553 000 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Fusionne avec l'ancien secteur Maures, meme artisan qu'Azur Ouest pour l'instant.", site: "https://azur-chauffe-eau.fr/?secteur=argens" },
+  { zone: "Riviera", secteur: "Alpes-Maritimes (06), Nice (~565 900 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse.", site: "../riviera-chauffe-eau-services/index.html" },
+  { zone: "Estérel", secteur: "Alpes-Maritimes (06), Cannes, Antibes, Grasse (~562 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "../esterel-chauffe-eau-services/index.html" },
+  { zone: "Calanques", secteur: "Bouches-du-Rhône (13), Marseille ville (~886 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse. Couleur a revoir.", site: "../calanques-chauffe-eau-services/index.html" },
+  { zone: "Provence", secteur: "Bouches-du-Rhône (13), Aix, Aubagne, Cassis, La Ciotat (~594 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Couleur a revoir.", site: "../provence-chauffe-eau-services/index.html" },
+  { zone: "Berre", secteur: "Bouches-du-Rhône (13), Salon, Istres, Martigues, Marignane (~599 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Nouvelle zone, issue du découpage à trois du 13. Couleur a revoir.", site: "../berre-chauffe-eau-services/index.html" },
+  { zone: "Ventoux", secteur: "Vaucluse (84)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "" },
+  { zone: "Alpes du Sud", secteur: "04 / 05", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, tarif à revoir à la baisse.", site: "" },
 ]);
 
 const registreEncaissements = creerRegistre("paca-pilotage-encaissements-v1", null, []);
@@ -243,6 +244,21 @@ function dessinerZones() {
     tdStatut.appendChild(sel);
     tr.appendChild(tdStatut);
 
+    const tdSite = document.createElement("td");
+    if (z.site) {
+      const a = document.createElement("a");
+      a.className = "piece";
+      a.href = z.site;
+      a.textContent = "Voir";
+      a.target = "_blank";
+      a.rel = "noopener";
+      tdSite.appendChild(a);
+    } else {
+      tdSite.textContent = "—";
+      tdSite.style.color = "var(--grey)";
+    }
+    tr.appendChild(tdSite);
+
     tr.appendChild(champEditable(z.artisan, (v) => { z.artisan = v; registreZones.sauver(); }));
     tr.appendChild(champEditable(z.tel, (v) => { z.tel = v; registreZones.sauver(); }));
     tr.appendChild(champEditable(z.tarif, (v) => { z.tarif = v; registreZones.sauver(); }));
@@ -259,7 +275,7 @@ function dessinerZones() {
 
 document.getElementById("ajouter-zone").addEventListener("click", () => {
   const lignes = registreZones.get();
-  lignes.push({ zone: "Nouvelle zone", secteur: "", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "" });
+  lignes.push({ zone: "Nouvelle zone", secteur: "", statut: "bientot", site: "", artisan: "", tel: "", tarif: "", services: "", notes: "" });
   registreZones.set(lignes); dessinerZones(); dessinerStats();
 });
 
