@@ -61,6 +61,21 @@
   }
   .hero h1{color:#fff;font-size:38px;max-width:680px;margin:0 auto 18px;}
   .hero p{color:#DBF0FF;max-width:520px;margin:0 auto;font-size:16px;}
+  .ville-recherche{
+    display:flex;gap:8px;max-width:440px;margin:28px auto 0;
+    background:#fff;padding:6px;border-radius:8px;
+  }
+  .ville-recherche input{
+    flex:1;border:none;padding:10px 12px;font-size:14px;
+    font-family:'Public Sans',sans-serif;color:var(--slate);border-radius:6px;
+  }
+  .ville-recherche input:focus{outline:2px solid var(--navy);}
+  .ville-recherche button{
+    border:none;background:var(--navy-deep);color:#fff;font-weight:600;
+    font-size:13.5px;padding:0 18px;border-radius:6px;cursor:pointer;
+  }
+  .ville-recherche button:hover{background:#022c48;}
+  .ville-msg{margin-top:14px;font-size:13.5px;color:#DBF0FF;max-width:440px;margin-left:auto;margin-right:auto;}
 
   .zones{padding:56px 0 90px;}
   .zones h2{text-align:center;font-size:26px;margin-bottom:8px;}
@@ -91,6 +106,12 @@
     background:#E1F5EE;color:var(--teal);white-space:nowrap;
   }
   .zone-status.soon{background:var(--disabled-line);color:var(--disabled-text);}
+  .sous-secteurs{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .sous-secteurs a{
+    font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;
+    border:1px solid var(--zc);color:var(--zc);text-decoration:none;
+  }
+  .sous-secteurs a:hover{background:var(--zc);color:#fff;}
 
   /* Fiche de contact de la zone */
   .fiche{
@@ -132,6 +153,11 @@
     <p class="eyebrow">Dans toute la région PACA</p>
     <h1>Chauffe-eau électrique : dépannage, remplacement, pose</h1>
     <p>Chaque zone est tenue par un artisan qui intervient lui-même, pas un réseau de sous-traitants. Choisissez votre secteur pour être mis en relation avec le bon artisan.</p>
+    <div class="ville-recherche">
+      <input type="text" id="ville-input" placeholder="Votre ville, ex. Bandol, Nice, Aix..." autocomplete="off">
+      <button type="button" id="ville-go">Trouver mon artisan</button>
+    </div>
+    <p class="ville-msg" id="ville-msg" hidden></p>
   </div>
 </section>
 
@@ -142,24 +168,28 @@
 
     <div class="zone-list">
 
-      <a class="zone-row" style="--zc:#0EA5E9;text-decoration:none;" href="https://azur-chauffe-eau.fr" target="_blank" rel="noopener">
+      <div class="zone-row" style="--zc:#0EA5E9;">
         <div class="zone-main">
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="83" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Azur</div>
               <div class="zone-dept">Var (83), secteur Toulon</div>
+              <div class="sous-secteurs">
+                <a href="https://azur-chauffe-eau.fr" target="_blank" rel="noopener">Azur Ouest, La Ciotat &rarr; Sanary</a>
+                <a href="https://azur-chauffe-eau.fr" target="_blank" rel="noopener">Azur Est, Ollioules &rarr; Hyères</a>
+              </div>
             </div>
           </div>
           <span class="zone-status">Disponible</span>
         </div>
         <div class="fiche">
           <div class="marque">Azur <span>Chauffe-Eau Services</span></div>
-          <div class="accroche">C'est l'artisan qui vient, pas un sous-traitant.</div>
+          <div class="accroche">C'est l'artisan qui vient, pas un sous-traitant. Même artisan sur les deux secteurs.</div>
           <span class="tel">☎ 06 44 17 08 79</span>
           <span class="site">azur-chauffe-eau.fr</span>
         </div>
-      </a>
+      </div>
 
       <div class="zone-row disabled" style="--zc:#0EA5E9;">
         <div class="zone-main">
@@ -303,6 +333,46 @@
       rects += `<rect class="${cls}" x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="3"/>`;
     }
     svg.innerHTML = rects;
+  });
+
+  // Recherche par ville. Liste indicative, pas exhaustive : Azur a la liste
+  // complete (deja utilisee sur azur-chauffe-eau.fr), les autres zones n'ont
+  // que quelques villes reperes en attendant un artisan et un vrai site.
+  const VILLES = {
+    "la ciotat": "https://azur-chauffe-eau.fr", "saint-cyr-sur-mer": "https://azur-chauffe-eau.fr",
+    "bandol": "https://azur-chauffe-eau.fr", "sanary-sur-mer": "https://azur-chauffe-eau.fr",
+    "six-fours-les-plages": "https://azur-chauffe-eau.fr", "le beausset": "https://azur-chauffe-eau.fr",
+    "la seyne-sur-mer": "https://azur-chauffe-eau.fr", "ollioules": "https://azur-chauffe-eau.fr",
+    "toulon": "https://azur-chauffe-eau.fr", "la garde": "https://azur-chauffe-eau.fr",
+    "hyeres": "https://azur-chauffe-eau.fr", "hyères": "https://azur-chauffe-eau.fr",
+    "saint-tropez": null, "bormes-les-mimosas": null, "brignoles": null, "le luc": null,
+    "nice": null, "cannes": null, "antibes": null,
+    "marseille": null, "aix-en-provence": null, "aix": null,
+    "avignon": null, "carpentras": null,
+    "gap": null, "digne-les-bains": null,
+  };
+  function normalise(t){
+    return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+  }
+  function chercherVille(){
+    const msg = document.getElementById("ville-msg");
+    const val = normalise(document.getElementById("ville-input").value);
+    if (!val) return;
+    const cle = Object.keys(VILLES).find(v => normalise(v) === val);
+    if (cle && VILLES[cle]) {
+      window.open(VILLES[cle], "_blank", "noopener");
+      msg.hidden = true;
+    } else if (cle) {
+      msg.textContent = "Pas encore d'artisan sur votre secteur, mais la zone existe déjà. Regardez la liste ci-dessous.";
+      msg.hidden = false;
+    } else {
+      msg.textContent = "Ville non reconnue pour l'instant. Parcourez la liste des zones ci-dessous.";
+      msg.hidden = false;
+    }
+  }
+  document.getElementById("ville-go").addEventListener("click", chercherVille);
+  document.getElementById("ville-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") chercherVille();
   });
 </script>
 
