@@ -154,7 +154,7 @@
     <h1>Chauffe-eau électrique : dépannage, remplacement, pose</h1>
     <p>Chaque zone est tenue par un artisan qui intervient lui-même, pas un réseau de sous-traitants. Choisissez votre secteur pour être mis en relation avec le bon artisan.</p>
     <div class="ville-recherche">
-      <input type="text" id="ville-input" placeholder="Votre ville, ex. Bandol, Nice, Aix..." autocomplete="off">
+      <input type="text" id="ville-input" placeholder="Votre ville ou code postal, ex. Bandol, 83000, Nice..." autocomplete="off">
       <button type="button" id="ville-go">Trouver mon artisan</button>
     </div>
     <p class="ville-msg" id="ville-msg" hidden></p>
@@ -320,10 +320,50 @@
   function normalise(t){
     return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
   }
+  // Reconnaissance par code postal, niveau 1 : le departement suffit a
+  // trouver la zone pour les departements a zone unique, et Marseille
+  // intra-muros (13001-13016) tombe exactement sur Calanques. Pour le
+  // Var et les Alpes-Maritimes, decoupes en deux sous-zones, le prefixe
+  // departement ne dit pas laquelle : il faudrait une table commune par
+  // commune (niveau 2, pas encore fait).
+  const DEPTS_ZONES = {
+    "83": { zone: "Azur",               dept: "Var (83)",                     url: "https://azur-chauffe-eau.fr" },
+    "06": { zone: "Riviera ou Estérel", dept: "Alpes-Maritimes (06)",         url: null },
+    "13": { zone: "Provence ou Berre",  dept: "Bouches-du-Rhône (13)",        url: null },
+    "84": { zone: "Ventoux",            dept: "Vaucluse (84)",                url: null },
+    "04": { zone: "Alpes du Sud",       dept: "Alpes-de-Haute-Provence (04)", url: null },
+    "05": { zone: "Alpes du Sud",       dept: "Hautes-Alpes (05)",            url: null },
+  };
+  function detecterCodePostal(brut){
+    if (!/^\d{4,5}$/.test(brut)) return undefined; // pas un code postal
+    const cp = brut.padStart(5, "0");
+    if (cp >= "13001" && cp <= "13016") {
+      return { zone: "Calanques", dept: "Bouches-du-Rhône (13)", url: null };
+    }
+    return DEPTS_ZONES[cp.slice(0, 2)] || null; // null = hors PACA
+  }
+
   function chercherVille(){
     const msg = document.getElementById("ville-msg");
-    const val = normalise(document.getElementById("ville-input").value);
-    if (!val) return;
+    const brut = document.getElementById("ville-input").value.trim();
+    if (!brut) return;
+
+    const cp = detecterCodePostal(brut);
+    if (cp !== undefined) {
+      if (cp === null) {
+        msg.textContent = "Code postal hors de notre zone de couverture, la région PACA uniquement pour l'instant.";
+        msg.hidden = false;
+      } else if (cp.url) {
+        window.open(cp.url, "_blank", "noopener");
+        msg.hidden = true;
+      } else {
+        msg.textContent = `Vous êtes dans la zone ${cp.zone}, ${cp.dept}. Artisan pas encore trouvé pour ce secteur, regardez la liste des zones ci-dessous.`;
+        msg.hidden = false;
+      }
+      return;
+    }
+
+    const val = normalise(brut);
     const cle = Object.keys(VILLES).find(v => normalise(v) === val);
     if (cle && VILLES[cle]) {
       window.open(VILLES[cle], "_blank", "noopener");
@@ -332,7 +372,7 @@
       msg.textContent = "Pas encore d'artisan sur votre secteur, mais la zone existe déjà. Regardez la liste ci-dessous.";
       msg.hidden = false;
     } else {
-      msg.textContent = "Ville non reconnue pour l'instant. Parcourez la liste des zones ci-dessous.";
+      msg.textContent = "Ville ou code postal non reconnu pour l'instant. Parcourez la liste des zones ci-dessous.";
       msg.hidden = false;
     }
   }
