@@ -90,6 +90,7 @@
   }
   .zone-row.disabled{background:var(--disabled-bg);border-color:var(--disabled-line);}
   .zone-row.disabled .mini-carte{opacity:.55;}
+  .zone-row.surligne{outline:3px solid var(--zc);outline-offset:3px;transition:outline-color .3s;}
 
   .zone-main{padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
   .zone-main-left{display:flex;align-items:center;gap:16px;}
@@ -168,7 +169,7 @@
 
     <div class="zone-list">
 
-      <div class="zone-row" style="--zc:#0EA5E9;">
+      <div class="zone-row" id="zone-83" style="--zc:#0EA5E9;">
         <div class="zone-main">
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="83" viewBox="0 0 120 90"></svg>
@@ -191,7 +192,7 @@
         </div>
       </div>
 
-      <div class="zone-row disabled" style="--zc:#E8734A;">
+      <div class="zone-row disabled" id="zone-06" style="--zc:#E8734A;">
         <div class="zone-main">
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="06" viewBox="0 0 120 90"></svg>
@@ -211,7 +212,7 @@
         </div>
       </div>
 
-      <div class="zone-row disabled" style="--zc:#8B7CC8;">
+      <div class="zone-row disabled" id="zone-13" style="--zc:#8B7CC8;">
         <div class="zone-main">
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="13" viewBox="0 0 120 90"></svg>
@@ -232,7 +233,7 @@
         </div>
       </div>
 
-      <div class="zone-row disabled" style="--zc:#C9932E;">
+      <div class="zone-row disabled" id="zone-84" style="--zc:#C9932E;">
         <div class="zone-main">
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="84" viewBox="0 0 120 90"></svg>
@@ -248,7 +249,7 @@
         </div>
       </div>
 
-      <div class="zone-row disabled" style="--zc:#4F9C7C;">
+      <div class="zone-row disabled" id="zone-04-05" style="--zc:#4F9C7C;">
         <div class="zone-main">
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="04,05" viewBox="0 0 120 90"></svg>
@@ -321,24 +322,23 @@
     return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
   }
   // Reconnaissance par code postal, niveau 1 : le departement suffit a
-  // trouver la zone pour les departements a zone unique, et Marseille
-  // intra-muros (13001-13016) tombe exactement sur Calanques. Pour le
-  // Var et les Alpes-Maritimes, decoupes en deux sous-zones, le prefixe
-  // departement ne dit pas laquelle : il faudrait une table commune par
-  // commune (niveau 2, pas encore fait).
+  // trouver la carte de zone a afficher. Pour les departements a deux ou
+  // trois secteurs, on ne devine pas lequel : on scrolle vers la carte et
+  // c'est le client qui clique sur le bouton le plus proche de chez lui.
+  // Marseille intra-muros (13001-13016) est le seul cas sans ambiguite.
   const DEPTS_ZONES = {
-    "83": { zone: "Azur",               dept: "Var (83)",                     url: "https://azur-chauffe-eau.fr" },
-    "06": { zone: "Riviera ou Estérel", dept: "Alpes-Maritimes (06)",         url: null },
-    "13": { zone: "Provence ou Berre",  dept: "Bouches-du-Rhône (13)",        url: null },
-    "84": { zone: "Ventoux",            dept: "Vaucluse (84)",                url: null },
-    "04": { zone: "Alpes du Sud",       dept: "Alpes-de-Haute-Provence (04)", url: null },
-    "05": { zone: "Alpes du Sud",       dept: "Hautes-Alpes (05)",            url: null },
+    "83": { rowId: "zone-83",    dept: "Var (83)",                     multi: true },
+    "06": { rowId: "zone-06",    dept: "Alpes-Maritimes (06)",         multi: true },
+    "13": { rowId: "zone-13",    dept: "Bouches-du-Rhône (13)",        multi: true },
+    "84": { rowId: "zone-84",    dept: "Vaucluse (84)",                multi: false },
+    "04": { rowId: "zone-04-05", dept: "Alpes-de-Haute-Provence (04)", multi: false },
+    "05": { rowId: "zone-04-05", dept: "Hautes-Alpes (05)",            multi: false },
   };
   function detecterCodePostal(brut){
     if (!/^\d{4,5}$/.test(brut)) return undefined; // pas un code postal
     const cp = brut.padStart(5, "0");
     if (cp >= "13001" && cp <= "13016") {
-      return { zone: "Calanques", dept: "Bouches-du-Rhône (13)", url: null };
+      return { rowId: "zone-13", dept: "Bouches-du-Rhône (13)", multi: false, nom: "Calanques" };
     }
     return DEPTS_ZONES[cp.slice(0, 2)] || null; // null = hors PACA
   }
@@ -353,12 +353,21 @@
       if (cp === null) {
         msg.textContent = "Code postal hors de notre zone de couverture, la région PACA uniquement pour l'instant.";
         msg.hidden = false;
-      } else if (cp.url) {
-        window.open(cp.url, "_blank", "noopener");
-        msg.hidden = true;
+        return;
+      }
+      const ligne = document.getElementById(cp.rowId);
+      if (cp.multi) {
+        msg.textContent = `Vous êtes dans le ${cp.dept}. Cliquez sur le bouton du secteur le plus proche de chez vous, ci-dessus.`;
+      } else if (cp.nom) {
+        msg.textContent = `Vous êtes dans la zone ${cp.nom}, ${cp.dept}. Artisan pas encore trouvé pour ce secteur.`;
       } else {
-        msg.textContent = `Vous êtes dans la zone ${cp.zone}, ${cp.dept}. Artisan pas encore trouvé pour ce secteur, regardez la liste des zones ci-dessous.`;
-        msg.hidden = false;
+        msg.textContent = `Vous êtes dans la zone ${cp.dept}. Artisan pas encore trouvé pour ce secteur.`;
+      }
+      msg.hidden = false;
+      if (ligne) {
+        ligne.scrollIntoView({ behavior: "smooth", block: "center" });
+        ligne.classList.add("surligne");
+        setTimeout(() => ligne.classList.remove("surligne"), 2500);
       }
       return;
     }
