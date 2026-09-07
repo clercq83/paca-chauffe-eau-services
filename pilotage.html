@@ -55,9 +55,9 @@
     font:inherit;font-size:12.5px;font-weight:600;padding:4px 8px;border-radius:999px;
     border:none;cursor:pointer;
   }
-  select.actif, select.paye{background:var(--teal-bg);color:var(--teal);}
-  select.recherche, select.attente{background:var(--amber-bg);color:var(--amber);}
-  select.bientot, select.annule{background:var(--grey-bg);color:var(--grey);}
+  select.actif, select.paye, select.converti{background:var(--teal-bg);color:var(--teal);}
+  select.recherche, select.attente, select.nouveau, select.contacte, select.devis{background:var(--amber-bg);color:var(--amber);}
+  select.bientot, select.annule, select.perdu{background:var(--grey-bg);color:var(--grey);}
 
   .row-actions{margin-top:12px;}
   button{
@@ -172,6 +172,36 @@
 
 <section class="bloc">
   <div class="bloc-head">
+    <h2>Clients</h2>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:900px;">
+      <thead>
+        <tr>
+          <th style="width:10%">Date</th>
+          <th style="width:14%">Nom</th>
+          <th style="width:12%">Téléphone</th>
+          <th style="width:12%">Commune</th>
+          <th style="width:11%">Zone</th>
+          <th style="width:20%">Besoin</th>
+          <th style="width:10%">Statut</th>
+          <th>Notes</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="corps-clients"></tbody>
+    </table>
+  </div>
+  <div class="row-actions"><button id="ajouter-client">+ Ajouter un client</button></div>
+  <p class="note">
+    Les formulaires des sites ouvrent un e-mail pré-rempli (pas de captation automatique, pas de
+    serveur derrière) : à chaque demande reçue par e-mail ou par téléphone, colle les infos ici
+    toi-même. Statut : Nouveau → Contacté → Devis envoyé → Converti (ou Perdu).
+  </p>
+</section>
+
+<section class="bloc">
+  <div class="bloc-head">
     <h2>Documents</h2>
   </div>
   <div class="table-wrap">
@@ -229,6 +259,7 @@ const registreZones = creerRegistre("paca-pilotage-zones-v7", null, [
 
 const registreEncaissements = creerRegistre("paca-pilotage-encaissements-v1", null, []);
 const registreDocuments = creerRegistre("paca-pilotage-documents-v1", null, []);
+const registreClients = creerRegistre("paca-pilotage-clients-v1", null, []);
 const registreCharges = creerRegistre("paca-pilotage-charges-v1", null, { montant: "", note: "" });
 
 function champEditable(valeur, onChange) {
@@ -358,6 +389,53 @@ document.getElementById("ajouter-encaissement").addEventListener("click", () => 
   registreEncaissements.set(lignes); dessinerEncaissements(); dessinerStats(); dessinerFinances();
 });
 
+// ---------- Clients ----------
+function dessinerClients() {
+  const corps = document.getElementById("corps-clients");
+  corps.innerHTML = "";
+  const lignes = registreClients.get();
+
+  lignes.forEach((c, i) => {
+    const tr = document.createElement("tr");
+    tr.appendChild(champEditable(c.date, (v) => { c.date = v; registreClients.sauver(); }));
+    tr.appendChild(champEditable(c.nom, (v) => { c.nom = v; registreClients.sauver(); }));
+    tr.appendChild(champEditable(c.tel, (v) => { c.tel = v; registreClients.sauver(); }));
+    tr.appendChild(champEditable(c.commune, (v) => { c.commune = v; registreClients.sauver(); }));
+    tr.appendChild(champEditable(c.zone, (v) => { c.zone = v; registreClients.sauver(); }));
+    tr.appendChild(champEditable(c.besoin, (v) => { c.besoin = v; registreClients.sauver(); }));
+
+    const tdStatut = document.createElement("td");
+    const sel = document.createElement("select");
+    sel.className = c.statut || "nouveau";
+    [["nouveau", "Nouveau"], ["contacte", "Contacté"], ["devis", "Devis envoyé"], ["converti", "Converti"], ["perdu", "Perdu"]].forEach(([val, lib]) => {
+      const opt = document.createElement("option");
+      opt.value = val; opt.textContent = lib;
+      if (val === (c.statut || "nouveau")) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener("change", () => {
+      c.statut = sel.value; sel.className = sel.value;
+      registreClients.sauver(); dessinerStats();
+    });
+    tdStatut.appendChild(sel);
+    tr.appendChild(tdStatut);
+
+    tr.appendChild(champEditable(c.notes, (v) => { c.notes = v; registreClients.sauver(); }));
+    tr.appendChild(boutonSupprimer(() => {
+      if (confirm(`Supprimer la fiche de "${c.nom || 'ce client'}" ?`)) {
+        lignes.splice(i, 1); registreClients.set(lignes); dessinerClients(); dessinerStats();
+      }
+    }));
+    corps.appendChild(tr);
+  });
+}
+
+document.getElementById("ajouter-client").addEventListener("click", () => {
+  const lignes = registreClients.get();
+  lignes.push({ date: new Date().toLocaleDateString("fr-FR"), nom: "", tel: "", commune: "", zone: "", besoin: "", statut: "nouveau", notes: "" });
+  registreClients.set(lignes); dessinerClients(); dessinerStats();
+});
+
 // ---------- Documents ----------
 function dessinerDocuments() {
   const corps = document.getElementById("corps-documents");
@@ -477,24 +555,29 @@ document.getElementById("champ-charges").addEventListener("blur", (e) => {
 function dessinerStats() {
   const zones = registreZones.get();
   const encaissements = registreEncaissements.get();
+  const clients = registreClients.get();
   const actifs = zones.filter(z => z.statut === "actif").length;
   const recherche = zones.filter(z => z.statut === "recherche").length;
   const bientot = zones.filter(z => z.statut === "bientot").length;
   const totalEncaisse = encaissements
     .filter(e => e.statut === "paye")
     .reduce((s, e) => s + (parseFloat((e.montant || "0").replace(",", ".").replace(/[^\d.-]/g, "")) || 0), 0);
+  const clientsAtraiter = clients.filter(c => c.statut === "nouveau" || c.statut === "contacte" || !c.statut).length;
 
   document.getElementById("stats").innerHTML = `
     <div class="stat"><div class="n">${zones.length}</div><div class="l">zones au total</div></div>
     <div class="stat"><div class="n">${actifs}</div><div class="l">actives</div></div>
     <div class="stat"><div class="n">${recherche}</div><div class="l">en recherche d'artisan</div></div>
     <div class="stat"><div class="n">${bientot}</div><div class="l">pas encore lancées</div></div>
+    <div class="stat"><div class="n">${clients.length}</div><div class="l">clients enregistrés</div></div>
+    <div class="stat"><div class="n">${clientsAtraiter}</div><div class="l">clients à traiter</div></div>
     <div class="stat"><div class="n">${totalEncaisse.toLocaleString("fr-FR")} €</div><div class="l">encaissé (payé)</div></div>
   `;
 }
 
 dessinerZones();
 dessinerEncaissements();
+dessinerClients();
 dessinerDocuments();
 dessinerStats();
 dessinerFinances();
