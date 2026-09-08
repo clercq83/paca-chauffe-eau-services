@@ -175,10 +175,9 @@
             <svg class="mini-carte" data-hl="83" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Azur</div>
-              <div class="zone-dept">Var (83) entier, 2 secteurs a population equivalente</div>
+              <div class="zone-dept">Var (83) entier (~1 070 500 hab. / ~500 200 foyers)</div>
               <div class="sous-secteurs">
-                <a href="https://azur-chauffe-eau.fr/?secteur=ouest" target="_blank" rel="noopener" style="--zc:#0EA5E9;">Azur Ouest, Bandol &rarr; Hyeres (~517 500 hab. / ~241 800 foyers)</a>
-                <a href="https://azur-chauffe-eau.fr/?secteur=argens" target="_blank" rel="noopener" style="--zc:#0D9488;">Argens, Frejus &rarr; Brignoles (~553 000 hab. / ~258 400 foyers)</a>
+                <a href="https://azur-chauffe-eau.fr/" target="_blank" rel="noopener" style="--zc:#0EA5E9;">Voir le site</a>
               </div>
             </div>
           </div>
@@ -324,20 +323,17 @@
   function normalise(t){
     return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
   }
-  // Reconnaissance par code postal, niveau 1 : le departement suffit a
-  // trouver la carte de zone a afficher. Pour les departements a deux ou
-  // trois secteurs, on ne devine pas lequel : on scrolle vers la carte et
-  // c'est le client qui clique sur le bouton le plus proche de chez lui.
-  // Depuis le passage a un site par departement (un seul partenaire a la
-  // fois, plusieurs secteurs geres en interne), seul le 83 (Azur) a encore
-  // deux secteurs distincts sur le meme site.
+  // Reconnaissance par code postal : le departement suffit a trouver la
+  // carte de zone a afficher, un seul site par departement (les secteurs
+  // internes, s'il y en a plusieurs, sont geres a l'interieur du site,
+  // pas affiches ici). "actif" = zone deja en service avec un artisan.
   const DEPTS_ZONES = {
-    "83": { rowId: "zone-83",    dept: "Var (83)",                     multi: true },
-    "06": { rowId: "zone-06",    dept: "Alpes-Maritimes (06)",         multi: false, nom: "Riviera" },
-    "13": { rowId: "zone-13",    dept: "Bouches-du-Rhône (13)",        multi: false, nom: "Provence" },
-    "84": { rowId: "zone-84",    dept: "Vaucluse (84)",                multi: false, nom: "Vaucluse" },
-    "04": { rowId: "zone-04-05", dept: "Alpes-de-Haute-Provence (04)", multi: false, nom: "Alpes" },
-    "05": { rowId: "zone-04-05", dept: "Hautes-Alpes (05)",            multi: false, nom: "Alpes" },
+    "83": { rowId: "zone-83",    dept: "Var (83)",                     nom: "Azur",    actif: true },
+    "06": { rowId: "zone-06",    dept: "Alpes-Maritimes (06)",         nom: "Riviera" },
+    "13": { rowId: "zone-13",    dept: "Bouches-du-Rhône (13)",        nom: "Provence" },
+    "84": { rowId: "zone-84",    dept: "Vaucluse (84)",                nom: "Vaucluse" },
+    "04": { rowId: "zone-04-05", dept: "Alpes-de-Haute-Provence (04)", nom: "Alpes" },
+    "05": { rowId: "zone-04-05", dept: "Hautes-Alpes (05)",            nom: "Alpes" },
   };
   function detecterCodePostal(brut){
     if (!/^\d{4,5}$/.test(brut)) return undefined; // pas un code postal
@@ -358,8 +354,8 @@
         return;
       }
       const ligne = document.getElementById(cp.rowId);
-      if (cp.multi) {
-        msg.textContent = `Vous êtes dans le ${cp.dept}. Cliquez sur le bouton du secteur le plus proche de chez vous, ci-dessus.`;
+      if (cp.actif) {
+        msg.textContent = `Vous êtes dans le ${cp.dept}, chez ${cp.nom} Chauffe-Eau Services. Cliquez ci-dessus pour le site.`;
       } else if (cp.nom) {
         msg.textContent = `Vous êtes dans la zone ${cp.nom}, ${cp.dept}. Artisan pas encore trouvé pour ce secteur.`;
       } else {
