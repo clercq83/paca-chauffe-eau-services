@@ -192,23 +192,22 @@
         </div>
       </div>
 
-      <div class="zone-row disabled" id="zone-06" style="--zc:#E8734A;">
+      <div class="zone-row disabled" id="zone-06" style="--zc:#B8902A;">
         <div class="zone-main">
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="06" viewBox="0 0 120 90"></svg>
             <div>
               <div class="zone-name">Riviera</div>
-              <div class="zone-dept">Alpes-Maritimes (06) entier, 2 secteurs a population equivalente</div>
+              <div class="zone-dept">Alpes-Maritimes (06) entier (~1 128 400 hab. / ~527 300 foyers)</div>
               <div class="sous-secteurs">
-                <span style="--zc:#E8734A;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Riviera, Nice (~565 900 hab. / ~264 400 foyers)</span>
-                <span style="--zc:#C2410C;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Estérel, Cannes / Antibes / Grasse (~562 500 hab. / ~262 800 foyers)</span>
+                <a href="../riviera-chauffe-eau-services/index.html" target="_blank" rel="noopener" style="--zc:#B8902A;">Voir le site (pré-lancement)</a>
               </div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
         </div>
         <div class="fiche">
-          <span class="placeholder">Artisan pas encore trouvé, sur aucun des deux secteurs.</span>
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
         </div>
       </div>
 
@@ -217,19 +216,17 @@
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="13" viewBox="0 0 120 90"></svg>
             <div>
-              <div class="zone-name">Bouches-du-Rhône</div>
-              <div class="zone-dept">Département (13) entier, 3 secteurs</div>
+              <div class="zone-name">Provence</div>
+              <div class="zone-dept">Bouches-du-Rhône (13) entier (~2 079 000 hab. / ~971 500 foyers)</div>
               <div class="sous-secteurs">
-                <span style="--zc:#0E8388;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Provence, Marseille ville (~886 000 hab. / ~414 000 foyers)</span>
-                <span style="--zc:#C97A3D;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Pays d'Aix, Aix &bull; Aubagne &bull; Cassis &bull; La Ciotat (~594 000 hab. / ~277 600 foyers)</span>
-                <span style="--zc:#4A6FA5;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Côte Bleue, Salon &bull; Istres &bull; Martigues &bull; Marignane (~599 000 hab. / ~279 900 foyers)</span>
+                <a href="../provence-dept-chauffe-eau-services/index.html" target="_blank" rel="noopener" style="--zc:#0E8388;">Voir le site (pré-lancement)</a>
               </div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
         </div>
         <div class="fiche">
-          <span class="placeholder">Artisan pas encore trouvé, sur aucun des trois secteurs.</span>
+          <span class="placeholder">Artisan pas encore trouvé pour cette zone.</span>
         </div>
       </div>
 
@@ -240,6 +237,9 @@
             <div>
               <div class="zone-name">Vaucluse</div>
               <div class="zone-dept">Vaucluse (84) entier (~561 500 hab. / ~262 400 foyers)</div>
+              <div class="sous-secteurs">
+                <a href="../vaucluse-chauffe-eau-services/index.html" target="_blank" rel="noopener" style="--zc:#C9932E;">Voir le site (pré-lancement)</a>
+              </div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
@@ -256,6 +256,9 @@
             <div>
               <div class="zone-name">Alpes</div>
               <div class="zone-dept">Alpes-de-Haute-Provence &amp; Hautes-Alpes (04 / 05), (~312 000 hab. / ~145 800 foyers)</div>
+              <div class="sous-secteurs">
+                <a href="../alpes-chauffe-eau-services/index.html" target="_blank" rel="noopener" style="--zc:#4F9C7C;">Voir le site (pré-lancement)</a>
+              </div>
             </div>
           </div>
           <span class="zone-status soon">Bientôt</span>
@@ -325,21 +328,20 @@
   // trouver la carte de zone a afficher. Pour les departements a deux ou
   // trois secteurs, on ne devine pas lequel : on scrolle vers la carte et
   // c'est le client qui clique sur le bouton le plus proche de chez lui.
-  // Marseille intra-muros (13001-13016) est le seul cas sans ambiguite.
+  // Depuis le passage a un site par departement (un seul partenaire a la
+  // fois, plusieurs secteurs geres en interne), seul le 83 (Azur) a encore
+  // deux secteurs distincts sur le meme site.
   const DEPTS_ZONES = {
     "83": { rowId: "zone-83",    dept: "Var (83)",                     multi: true },
-    "06": { rowId: "zone-06",    dept: "Alpes-Maritimes (06)",         multi: true },
-    "13": { rowId: "zone-13",    dept: "Bouches-du-Rhône (13)",        multi: true },
-    "84": { rowId: "zone-84",    dept: "Vaucluse (84)",                multi: false },
-    "04": { rowId: "zone-04-05", dept: "Alpes-de-Haute-Provence (04)", multi: false },
-    "05": { rowId: "zone-04-05", dept: "Hautes-Alpes (05)",            multi: false },
+    "06": { rowId: "zone-06",    dept: "Alpes-Maritimes (06)",         multi: false, nom: "Riviera" },
+    "13": { rowId: "zone-13",    dept: "Bouches-du-Rhône (13)",        multi: false, nom: "Provence" },
+    "84": { rowId: "zone-84",    dept: "Vaucluse (84)",                multi: false, nom: "Vaucluse" },
+    "04": { rowId: "zone-04-05", dept: "Alpes-de-Haute-Provence (04)", multi: false, nom: "Alpes" },
+    "05": { rowId: "zone-04-05", dept: "Hautes-Alpes (05)",            multi: false, nom: "Alpes" },
   };
   function detecterCodePostal(brut){
     if (!/^\d{4,5}$/.test(brut)) return undefined; // pas un code postal
     const cp = brut.padStart(5, "0");
-    if (cp >= "13001" && cp <= "13016") {
-      return { rowId: "zone-13", dept: "Bouches-du-Rhône (13)", multi: false, nom: "Provence" };
-    }
     return DEPTS_ZONES[cp.slice(0, 2)] || null; // null = hors PACA
   }
 

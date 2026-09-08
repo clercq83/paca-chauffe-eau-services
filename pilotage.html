@@ -245,16 +245,13 @@ function creerRegistre(cle, colonnes, parDefaut) {
   };
 }
 
-const registreZones = creerRegistre("paca-pilotage-zones-v8", null, [
+const registreZones = creerRegistre("paca-pilotage-zones-v9", null, [
   { zone: "Azur Ouest", secteur: "Var (83), Bandol a Hyeres (~517 500 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle.", site: "https://azur-chauffe-eau.fr/?secteur=ouest", couts: "" },
   { zone: "Argens", secteur: "Var (83), Frejus a Brignoles (~553 000 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Fusionne avec l'ancien secteur Maures, meme artisan qu'Azur Ouest pour l'instant.", site: "https://azur-chauffe-eau.fr/?secteur=argens", couts: "" },
-  { zone: "Riviera", secteur: "Alpes-Maritimes (06), Nice (~565 900 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse.", site: "../riviera-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Estérel", secteur: "Alpes-Maritimes (06), Cannes, Antibes, Grasse (~562 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "../esterel-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Provence", secteur: "Bouches-du-Rhône (13), Marseille ville (~886 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Forte demande, tarif à revoir à la hausse. Anciennement appelée Calanques.", site: "../calanques-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Pays d'Aix", secteur: "Bouches-du-Rhône (13), Aix, Aubagne, Cassis, La Ciotat (~594 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Anciennement appelée Provence.", site: "../provence-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Côte Bleue", secteur: "Bouches-du-Rhône (13), Salon, Istres, Martigues, Marignane, Carry-le-Rouet (~599 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "Nouvelle zone, issue du découpage à trois du 13. Anciennement appelée Berre.", site: "../berre-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Vaucluse", secteur: "Vaucluse (84), (~561 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "390 €/mois", services: "", notes: "", site: "", couts: "" },
-  { zone: "Alpes", secteur: "Alpes-de-Haute-Provence & Hautes-Alpes (04 / 05), (~312 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, tarif à revoir à la baisse.", site: "", couts: "" },
+  { zone: "Riviera", secteur: "Alpes-Maritimes (06) entier, Nice a Menton (~1 128 400 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Departement entier, plusieurs partenaires possibles a terme (objectif 3). Anciennement 2 sites separes Riviera/Esterel.", site: "../riviera-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Provence", secteur: "Bouches-du-Rhône (13) entier, Marseille a Aix (~2 079 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Departement entier, plusieurs partenaires possibles a terme (objectif 5-6). Anciennement 3 sites separes Calanques/Provence/Cote Bleue.", site: "../provence-dept-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Vaucluse", secteur: "Vaucluse (84) entier (~561 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Objectif 1-2 partenaires.", site: "../vaucluse-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Alpes", secteur: "Alpes-de-Haute-Provence & Hautes-Alpes (04 / 05), (~312 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, non prioritaire pour l'instant.", site: "../alpes-chauffe-eau-services/index.html", couts: "" },
 ]);
 
 const registreEncaissements = creerRegistre("paca-pilotage-encaissements-v1", null, []);
