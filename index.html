@@ -217,11 +217,11 @@
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="13" viewBox="0 0 120 90"></svg>
             <div>
-              <div class="zone-name">Calanques</div>
-              <div class="zone-dept">Bouches-du-Rhône (13) entier, 3 secteurs</div>
+              <div class="zone-name">Bouches-du-Rhône</div>
+              <div class="zone-dept">Département (13) entier, 3 secteurs</div>
               <div class="sous-secteurs">
-                <span style="--zc:#0E8388;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Calanques, Marseille ville (~886 000 hab. / ~414 000 foyers)</span>
-                <span style="--zc:#C97A3D;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Provence, Aix &bull; Aubagne &bull; Cassis &bull; La Ciotat (~594 000 hab. / ~277 600 foyers)</span>
+                <span style="--zc:#0E8388;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Provence, Marseille ville (~886 000 hab. / ~414 000 foyers)</span>
+                <span style="--zc:#C97A3D;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Pays d'Aix, Aix &bull; Aubagne &bull; Cassis &bull; La Ciotat (~594 000 hab. / ~277 600 foyers)</span>
                 <span style="--zc:#4A6FA5;border-color:var(--zc);color:var(--zc);font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;border:1px solid var(--zc);">Côte Bleue, Salon &bull; Istres &bull; Martigues &bull; Marignane (~599 000 hab. / ~279 900 foyers)</span>
               </div>
             </div>
@@ -238,7 +238,7 @@
           <div class="zone-main-left">
             <svg class="mini-carte" data-hl="84" viewBox="0 0 120 90"></svg>
             <div>
-              <div class="zone-name">Ventoux</div>
+              <div class="zone-name">Vaucluse</div>
               <div class="zone-dept">Vaucluse (84)</div>
             </div>
           </div>
@@ -338,7 +338,7 @@
     if (!/^\d{4,5}$/.test(brut)) return undefined; // pas un code postal
     const cp = brut.padStart(5, "0");
     if (cp >= "13001" && cp <= "13016") {
-      return { rowId: "zone-13", dept: "Bouches-du-Rhône (13)", multi: false, nom: "Calanques" };
+      return { rowId: "zone-13", dept: "Bouches-du-Rhône (13)", multi: false, nom: "Provence" };
     }
     return DEPTS_ZONES[cp.slice(0, 2)] || null; // null = hors PACA
   }
