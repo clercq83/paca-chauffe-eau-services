@@ -172,6 +172,44 @@
 
 <section class="bloc">
   <div class="bloc-head">
+    <h2>Paiements en ligne</h2>
+  </div>
+  <div class="row-actions" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:0;margin-bottom:14px;">
+    <span style="font-size:13px;font-weight:600;color:var(--slate-soft);">URL du Worker</span>
+    <span id="champ-worker-url" style="display:inline-block;min-width:220px;padding:6px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:13.5px;" contenteditable="true"></span>
+    <span style="font-size:13px;font-weight:600;color:var(--slate-soft);">Token admin</span>
+    <span id="champ-worker-token" style="display:inline-block;min-width:160px;padding:6px 10px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:13.5px;" contenteditable="true"></span>
+    <button id="rafraichir-worker">Rafraîchir</button>
+    <span id="worker-statut" class="note" style="margin:0;"></span>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:900px;">
+      <thead>
+        <tr>
+          <th style="width:9%">Date</th>
+          <th style="width:22%">Intervention</th>
+          <th style="width:13%">Partenaire</th>
+          <th style="width:9%">Acompte</th>
+          <th style="width:9%">Solde</th>
+          <th style="width:12%">Statut</th>
+          <th style="width:10%">Commission</th>
+          <th>Facture</th>
+        </tr>
+      </thead>
+      <tbody id="corps-worker"></tbody>
+    </table>
+  </div>
+  <div class="stats" id="stats-worker" style="margin-top:16px;margin-bottom:0;"></div>
+  <p class="note">
+    Données réelles venant du système de paiement en ligne (Stripe Connect), pas saisies à la main — voir
+    ~/Projects/paca-groupe/paca-paiement. Le token admin est celui défini dans <code>ADMIN_TOKEN</code> côté
+    Worker (fichier <code>.dev.vars</code> en local). En mode test, l'URL est celle de <code>wrangler dev</code>
+    (ex. http://localhost:8787), lancé au préalable — sinon rien ne s'affiche ici.
+  </p>
+</section>
+
+<section class="bloc">
+  <div class="bloc-head">
     <h2>Clients</h2>
   </div>
   <div class="table-wrap">
@@ -547,6 +585,113 @@ document.getElementById("champ-charges").addEventListener("blur", (e) => {
   dessinerFinances();
 });
 
+// ---------- Paiements en ligne (Worker paca-paiement) ----------
+const registreWorkerConf = creerRegistre("paca-pilotage-worker-conf-v1", null, { url: "http://localhost:8787", token: "" });
+
+const LABELS_STATUT_WORKER = {
+  acompte_paye: "Acompte payé",
+  chantier_termine: "En attente validation",
+  solde_paye: "Soldé",
+};
+
+function dessinerConfigWorker() {
+  const conf = registreWorkerConf.get();
+  const champUrl = document.getElementById("champ-worker-url");
+  const champToken = document.getElementById("champ-worker-token");
+  if (document.activeElement !== champUrl) champUrl.textContent = conf.url || "";
+  if (document.activeElement !== champToken) champToken.textContent = conf.token || "";
+}
+
+async function rafraichirWorker() {
+  const conf = registreWorkerConf.get();
+  const statutEl = document.getElementById("worker-statut");
+  const corps = document.getElementById("corps-worker");
+  if (!conf.url || !conf.token) {
+    statutEl.textContent = "Renseigne l'URL et le token admin ci-dessus.";
+    return;
+  }
+  statutEl.textContent = "Chargement...";
+  try {
+    const r = await fetch(conf.url.replace(/\/$/, "") + "/reservations?admin=" + encodeURIComponent(conf.token));
+    if (r.status === 401 || r.status === 403) {
+      statutEl.textContent = "Token admin refusé.";
+      corps.innerHTML = "";
+      return;
+    }
+    if (!r.ok) { statutEl.textContent = "Erreur serveur (" + r.status + ")."; return; }
+    const resas = await r.json();
+    afficherWorker(resas, conf.url);
+    statutEl.textContent = resas.length + " réservation(s), à l'instant.";
+  } catch (e) {
+    statutEl.textContent = "Impossible de joindre le Worker (lancé ? URL correcte ?).";
+  }
+}
+
+function afficherWorker(resas, baseUrl) {
+  const corps = document.getElementById("corps-worker");
+  corps.innerHTML = "";
+  let totalAcompte = 0, totalSolde = 0, totalCommission = 0, posesSoldees = 0;
+
+  resas.forEach((r) => {
+    const tr = document.createElement("tr");
+    const dateVal = (r.soldePayeLe || r.termineLe || r.creeLe || "").slice(0, 10);
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: dateVal }));
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: r.description || "—" }));
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: (r.partenaireId || "").slice(-8) }));
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: ((r.acompteCentimes || 0) / 100).toLocaleString("fr-FR") + " €" }));
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: ((r.soldeCentimes || 0) / 100).toLocaleString("fr-FR") + " €" }));
+
+    const tdStatut = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.textContent = LABELS_STATUT_WORKER[r.statut] || r.statut;
+    badge.style.cssText = "font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:999px;" +
+      (r.statut === "solde_paye" ? "background:var(--teal-bg);color:var(--teal);" :
+       r.statut === "chantier_termine" ? "background:var(--amber-bg);color:var(--amber);" :
+       "background:var(--grey-bg);color:var(--grey);");
+    tdStatut.appendChild(badge);
+    tr.appendChild(tdStatut);
+
+    const commission = (r.commissionCentimes || 0) / 100;
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: r.statut === "solde_paye" ? commission.toLocaleString("fr-FR") + " €" : "—" }));
+
+    const tdFacture = document.createElement("td");
+    if (r.statut === "solde_paye") {
+      const a = document.createElement("a");
+      a.className = "piece";
+      a.href = baseUrl.replace(/\/$/, "") + "/facture-commission/" + r.reservationId;
+      a.textContent = "Voir";
+      a.target = "_blank";
+      a.rel = "noopener";
+      tdFacture.appendChild(a);
+    } else {
+      tdFacture.textContent = "—";
+      tdFacture.style.color = "var(--grey)";
+    }
+    tr.appendChild(tdFacture);
+
+    corps.appendChild(tr);
+
+    totalAcompte += (r.acompteCentimes || 0) / 100;
+    totalSolde += (r.soldeCentimes || 0) / 100;
+    if (r.statut === "solde_paye") { totalCommission += commission; posesSoldees += 1; }
+  });
+
+  document.getElementById("stats-worker").innerHTML = `
+    <div class="stat"><div class="n">${resas.length}</div><div class="l">réservations</div></div>
+    <div class="stat"><div class="n">${posesSoldees}</div><div class="l">soldées</div></div>
+    <div class="stat"><div class="n">${(totalAcompte + totalSolde).toLocaleString("fr-FR")} €</div><div class="l">encaissé par les partenaires</div></div>
+    <div class="stat"><div class="n" style="color:var(--teal)">${totalCommission.toLocaleString("fr-FR")} €</div><div class="l">commissions à toi</div></div>
+  `;
+}
+
+document.getElementById("champ-worker-url").addEventListener("blur", (e) => {
+  const conf = registreWorkerConf.get(); conf.url = e.target.textContent.trim(); registreWorkerConf.sauver();
+});
+document.getElementById("champ-worker-token").addEventListener("blur", (e) => {
+  const conf = registreWorkerConf.get(); conf.token = e.target.textContent.trim(); registreWorkerConf.sauver();
+});
+document.getElementById("rafraichir-worker").addEventListener("click", rafraichirWorker);
+
 // ---------- Stats ----------
 function dessinerStats() {
   const zones = registreZones.get();
@@ -577,6 +722,8 @@ dessinerClients();
 dessinerDocuments();
 dessinerStats();
 dessinerFinances();
+dessinerConfigWorker();
+rafraichirWorker();
 </script>
 
 </body>
