@@ -203,8 +203,9 @@
   <p class="note">
     Données réelles venant du système de paiement en ligne (Stripe Connect), pas saisies à la main — voir
     ~/Projects/paca-groupe/paca-paiement. Le token admin est celui défini dans <code>ADMIN_TOKEN</code> côté
-    Worker (fichier <code>.dev.vars</code> en local). En mode test, l'URL est celle de <code>wrangler dev</code>
-    (ex. http://localhost:8787), lancé au préalable — sinon rien ne s'affiche ici.
+    Worker. URL et token pointent maintenant vers le serveur réel en ligne
+    (<code>paca-paiement.clercq-ent.workers.dev</code>), plus besoin de lancer quoi que ce soit en local. Toujours
+    en mode test Stripe (argent fictif) tant qu'aucun vrai partenaire n'est signé.
   </p>
 </section>
 
@@ -283,12 +284,16 @@ function creerRegistre(cle, colonnes, parDefaut) {
   };
 }
 
-const registreZones = creerRegistre("paca-pilotage-zones-v11", null, [
-  { zone: "Azur", secteur: "Var (83) entier, Bandol a Brignoles (~1 070 500 hab.)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle. 2 secteurs geres en interne (Ouest / Argens) sur le meme site, meme artisan. Anciennement 2 lignes separees Azur Ouest / Argens.", site: "https://azur-chauffe-eau.fr/", couts: "" },
-  { zone: "Alpes-Maritimes", secteur: "Alpes-Maritimes (06) entier, Nice a Menton (~1 128 400 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Departement entier, plusieurs partenaires possibles a terme (objectif 3). Anciennement appele Riviera, abandonne pour conflit de nom avec des entreprises reelles.", site: "../alpes-maritimes-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Provence", secteur: "Bouches-du-Rhône (13) entier, Marseille a Aix (~2 079 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Departement entier, plusieurs partenaires possibles a terme (objectif 5-6). Anciennement 3 sites separes Calanques/Provence/Cote Bleue.", site: "../provence-dept-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Vaucluse", secteur: "Vaucluse (84) entier (~561 500 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Objectif 1-2 partenaires.", site: "../vaucluse-chauffe-eau-services/index.html", couts: "" },
-  { zone: "Alpes", secteur: "Alpes-de-Haute-Provence & Hautes-Alpes (04 / 05), (~312 000 hab.)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, non prioritaire pour l'instant.", site: "../alpes-chauffe-eau-services/index.html", couts: "" },
+// Foyers = population / 2.14 (moyenne nationale INSEE 2023, personnes par
+// residence principale), voir project_paca_chauffe_eau_roadmap. C'est le
+// nombre de foyers qui donne une vraie idee du potentiel de la zone (chaque
+// foyer = un chauffe-eau, pas chaque habitant).
+const registreZones = creerRegistre("paca-pilotage-zones-v12", null, [
+  { zone: "Azur", secteur: "Var (83) entier, Bandol a Brignoles (~1 070 500 hab., ~500 200 foyers)", statut: "actif", artisan: "Lionel Clercq", tel: "06 44 17 08 79", tarif: "", services: "Électrique", notes: "Zone d'origine, opérationnelle. 2 secteurs geres en interne (Ouest / Argens) sur le meme site, meme artisan. Anciennement 2 lignes separees Azur Ouest / Argens.", site: "https://azur-chauffe-eau.fr/", couts: "" },
+  { zone: "Alpes-Maritimes", secteur: "Alpes-Maritimes (06) entier, Nice a Menton (~1 128 400 hab., ~527 300 foyers)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Departement entier, plusieurs partenaires possibles a terme (objectif 3). Anciennement appele Riviera, abandonne pour conflit de nom avec des entreprises reelles.", site: "../alpes-maritimes-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Provence", secteur: "Bouches-du-Rhône (13) entier, Marseille a Aix (~2 079 000 hab., ~971 500 foyers)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Departement entier, plusieurs partenaires possibles a terme (objectif 5-6). Anciennement 3 sites separes Calanques/Provence/Cote Bleue.", site: "../provence-dept-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Vaucluse", secteur: "Vaucluse (84) entier (~561 500 hab., ~262 400 foyers)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Objectif 1-2 partenaires.", site: "../vaucluse-chauffe-eau-services/index.html", couts: "" },
+  { zone: "Alpes", secteur: "Alpes-de-Haute-Provence & Hautes-Alpes (04 / 05), (~312 000 hab., ~145 800 foyers)", statut: "bientot", artisan: "", tel: "", tarif: "", services: "", notes: "Zone rurale, non prioritaire pour l'instant.", site: "../alpes-chauffe-eau-services/index.html", couts: "" },
 ]);
 
 const registreEncaissements = creerRegistre("paca-pilotage-encaissements-v1", null, []);
@@ -586,7 +591,7 @@ document.getElementById("champ-charges").addEventListener("blur", (e) => {
 });
 
 // ---------- Paiements en ligne (Worker paca-paiement) ----------
-const registreWorkerConf = creerRegistre("paca-pilotage-worker-conf-v1", null, { url: "http://localhost:8787", token: "" });
+const registreWorkerConf = creerRegistre("paca-pilotage-worker-conf-v2", null, { url: "https://paca-paiement.clercq-ent.workers.dev", token: "s0RuizXCpMlYyuLOIA6aoCOSJMbkUFPN" });
 
 const LABELS_STATUT_WORKER = {
   acompte_paye: "Acompte payé",
