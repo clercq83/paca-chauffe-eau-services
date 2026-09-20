@@ -264,6 +264,61 @@
   </p>
 </section>
 
+<hr style="border:none;border-top:1px solid var(--line);margin:0 0 40px;">
+
+<a class="back" href="https://technivisio.fr" target="_blank" rel="noopener">&larr; technivisio.fr</a>
+<h1 id="technivisio">Pilotage Technivisio</h1>
+<p class="sub">Ton activité solo, séparée du réseau PACA : mêmes principes, pas de zones ni de partenaires. Enregistré uniquement sur cet ordinateur.</p>
+
+<section class="bloc">
+  <div class="bloc-head">
+    <h2>Contacts / leads</h2>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:820px;">
+      <thead>
+        <tr>
+          <th style="width:10%">Date</th>
+          <th style="width:18%">Contact</th>
+          <th style="width:12%">Type</th>
+          <th style="width:16%">Prestation</th>
+          <th style="width:12%">Statut</th>
+          <th>Notes</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody id="corps-contacts-technivisio"></tbody>
+    </table>
+  </div>
+  <div class="row-actions"><button id="ajouter-contact-technivisio">+ Ajouter un contact</button></div>
+  <p class="note">
+    Assureurs, courtiers, particuliers : tout contact qui vaut la peine d'être suivi, comme une piste
+    autour de la recherche de fuite visuelle.
+  </p>
+</section>
+
+<section class="bloc">
+  <div class="bloc-head">
+    <h2>Prestations</h2>
+  </div>
+  <div class="table-wrap">
+    <table style="min-width:640px;">
+      <thead>
+        <tr>
+          <th style="width:34%">Prestation</th>
+          <th style="width:22%">Durée</th>
+          <th style="width:14%">Tarif</th>
+        </tr>
+      </thead>
+      <tbody id="corps-prestations-technivisio"></tbody>
+    </table>
+  </div>
+  <p class="note">
+    Juste un récapitulatif pour t'y retrouver — la vraie source, c'est le fichier <code>lib/services.ts</code>
+    du site. Modifier ici ne change rien sur technivisio.fr, dis-le-moi si un prix ou une prestation change.
+  </p>
+</section>
+
 <script>
 function creerRegistre(cle, colonnes, parDefaut) {
   function charger() {
@@ -729,6 +784,80 @@ dessinerStats();
 dessinerFinances();
 dessinerConfigWorker();
 rafraichirWorker();
+
+// ---------- Technivisio : contacts / leads ----------
+const registreContactsTechnivisio = creerRegistre("technivisio-pilotage-contacts-v1", null, []);
+
+function dessinerContactsTechnivisio() {
+  const corps = document.getElementById("corps-contacts-technivisio");
+  corps.innerHTML = "";
+  const lignes = registreContactsTechnivisio.get();
+
+  lignes.forEach((c, i) => {
+    const tr = document.createElement("tr");
+    tr.appendChild(champEditable(c.date, (v) => { c.date = v; registreContactsTechnivisio.sauver(); }));
+    tr.appendChild(champEditable(c.contact, (v) => { c.contact = v; registreContactsTechnivisio.sauver(); }));
+    tr.appendChild(champEditable(c.type, (v) => { c.type = v; registreContactsTechnivisio.sauver(); }));
+    tr.appendChild(champEditable(c.prestation, (v) => { c.prestation = v; registreContactsTechnivisio.sauver(); }));
+
+    const tdStatut = document.createElement("td");
+    const sel = document.createElement("select");
+    sel.className = c.statut || "nouveau";
+    [["nouveau", "Nouveau"], ["contacte", "Contacté"], ["converti", "Converti"], ["perdu", "Perdu"]].forEach(([val, lib]) => {
+      const opt = document.createElement("option");
+      opt.value = val; opt.textContent = lib;
+      if (val === (c.statut || "nouveau")) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener("change", () => {
+      c.statut = sel.value; sel.className = sel.value;
+      registreContactsTechnivisio.sauver();
+    });
+    tdStatut.appendChild(sel);
+    tr.appendChild(tdStatut);
+
+    tr.appendChild(champEditable(c.notes, (v) => { c.notes = v; registreContactsTechnivisio.sauver(); }));
+    tr.appendChild(boutonSupprimer(() => {
+      if (confirm(`Supprimer le contact "${c.contact || 'sans nom'}" ?`)) {
+        lignes.splice(i, 1); registreContactsTechnivisio.set(lignes); dessinerContactsTechnivisio();
+      }
+    }));
+    corps.appendChild(tr);
+  });
+}
+
+document.getElementById("ajouter-contact-technivisio").addEventListener("click", () => {
+  const lignes = registreContactsTechnivisio.get();
+  lignes.push({ date: new Date().toLocaleDateString("fr-FR"), contact: "", type: "", prestation: "", statut: "nouveau", notes: "" });
+  registreContactsTechnivisio.set(lignes); dessinerContactsTechnivisio();
+});
+
+dessinerContactsTechnivisio();
+
+// ---------- Technivisio : prestations (recapitulatif statique, source = lib/services.ts) ----------
+const prestationsTechnivisio = [
+  { nom: "Diagnostic", duree: "30 min", prix: "25 €" },
+  { nom: "Diagnostic samedi", duree: "30 min · le samedi", prix: "35 €" },
+  { nom: "Diagnostic hors horaires", duree: "30 min · après 18h30 ou le dimanche", prix: "50 €" },
+  { nom: "Diagnostic + conseil achat", duree: "45 min", prix: "35 €" },
+  { nom: "Accompagnement pas-à-pas", duree: "30 min", prix: "35 €" },
+  { nom: "Accompagnement pas-à-pas samedi", duree: "30 min · le samedi", prix: "45 €" },
+  { nom: "Accompagnement pas-à-pas hors horaires", duree: "30 min · après 18h30 ou le dimanche", prix: "70 €" },
+  { nom: "Conseil achat", duree: "15 min", prix: "15 €" },
+  { nom: "Second avis / vérif devis", duree: "15 min", prix: "15 €" },
+  { nom: "Recherche de fuite visuelle", duree: "1h", prix: "60 €" },
+];
+(function dessinerPrestationsTechnivisio() {
+  const corps = document.getElementById("corps-prestations-technivisio");
+  corps.innerHTML = "";
+  prestationsTechnivisio.forEach((p) => {
+    const tr = document.createElement("tr");
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: p.nom }));
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: p.duree }));
+    tr.appendChild(Object.assign(document.createElement("td"), { textContent: p.prix, style: "font-weight:600" }));
+    corps.appendChild(tr);
+  });
+})();
 </script>
 
 </body>
